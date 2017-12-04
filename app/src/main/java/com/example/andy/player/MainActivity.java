@@ -1,7 +1,8 @@
 package com.example.andy.player;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
@@ -14,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.andy.player.aidl.IMusicPlayer;
 import com.example.andy.player.aidl.MusicPlayListner;
 import com.example.andy.player.aidl.SongBean;
@@ -30,6 +32,7 @@ import com.example.andy.player.weight.DisplayLayout;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -124,19 +127,28 @@ public class MainActivity extends MvpActivity<PlayPresnter> implements IplayStat
     @Override
     protected void initData() {
         super.initData();
+        //隐藏状态栏
+        if (Build.VERSION.SDK_INT >= 21) {
+            View decorView = getWindow().getDecorView();
+            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            decorView.setSystemUiVisibility(option);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }else
+        {
+            View decorView = getWindow().getDecorView();
+            int option = View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(option);
+        }
+
         mPresenter.getSongs();
         dislayout = (Dislayout) findViewById(R.id.play_dis_layout);
         dislayout.setpStatus(this);
         lrcView = (LrcView) findViewById(R.id.lrc_view);
         Log.d(TAG, "onCreate: " + System.currentTimeMillis());
         unbinder = ButterKnife.bind(this);
-
-        bitmaps[0] = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.raw.ic_music1);
-        bitmaps[1] = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.raw.ic_music2);
-        bitmaps[2] = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.raw.ic_music3);
-        LogUtil.doLog("initData",""+bitmaps[0].getRowBytes()+"   2:"+bitmaps[1].getRowBytes()+"     3"+bitmaps[2].getRowBytes());
-        setFreground.setForeground(DiskDimenUtils.getForegroundDrawable(bitmaps[0], this));
-        setFreground.beginAnimation();
+        //使用异步线程加载Bitmap
+        loadBitmap();
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -144,6 +156,8 @@ public class MainActivity extends MvpActivity<PlayPresnter> implements IplayStat
                 LogUtil.doLog("onCreate", "------------" + mMusicService.toString());
                 try {
                     mMusicService.registListner(listner);
+                    setFreground.setForeground(DiskDimenUtils.getForegroundDrawable(bitmaps[0], getApplicationContext()));
+                    setFreground.beginAnimation();
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -155,6 +169,22 @@ public class MainActivity extends MvpActivity<PlayPresnter> implements IplayStat
     }
 
 
+    public void loadBitmap(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    bitmaps[0] = Glide.with(getApplicationContext()).load(R.mipmap.ic_music1).asBitmap().centerCrop().into(100,100).get();
+                    bitmaps[1] = Glide.with(getApplicationContext()).load(R.mipmap.ic_music2).asBitmap().centerCrop().into(100,100).get();
+                    bitmaps[2] = Glide.with(getApplicationContext()).load(R.mipmap.ic_music3).asBitmap().centerCrop().into(100,100).get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_main;

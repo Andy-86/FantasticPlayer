@@ -23,6 +23,7 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">17sp</item>>
     </style>
+
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/red</item>
         <item name="colorPrimaryDark">@color/red</item>
@@ -52,4 +53,8 @@
     </style>
 
     <style name="AppTheme.Text" parent="TextAppearance.AppCompat" />
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

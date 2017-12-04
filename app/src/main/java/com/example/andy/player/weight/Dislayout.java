@@ -52,7 +52,11 @@ public class Dislayout extends RelativeLayout {
     private ObjectAnimator mNeedleAnimator;
     private long mScreenWidth;
     private long mSreenHeight;
-    private int[] imageResours = {R.raw.ic_music1, R.raw.ic_music2, R.raw.ic_music3};
+
+    private Bitmap bitmapDisc;
+    private boolean isFirstload=true;
+
+    private int[] imageResours = {R.mipmap.ic_music1, R.mipmap.ic_music2, R.mipmap.ic_music3};
 
     public IplayStatus getpStatus() {
         return pStatus;
@@ -250,8 +254,7 @@ public class Dislayout extends RelativeLayout {
      * @return
      */
     private Drawable getDiscBlackgroundDrawable() {
-        int discSize = (int) (mScreenWidth * DiskDimenUtils.SCALE_DISC_SIZE);
-        Bitmap bitmapDisc = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_disc_blackground), discSize, discSize, false);
+
         RoundedBitmapDrawable roundDiscDrawable = RoundedBitmapDrawableFactory.create
                 (getResources(), bitmapDisc);
         return roundDiscDrawable;
@@ -384,9 +387,11 @@ public class Dislayout extends RelativeLayout {
     private Drawable getDiscDrawable(int imageResource) {
         int discSize = (int) (mScreenWidth * DiskDimenUtils.SCALE_DISC_SIZE);
         int musicPicSize = (int) (mScreenWidth * DiskDimenUtils.SCALE_MUSIC_PIC_SIZE);
-
-        Bitmap bitmapDisc = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R
-                .drawable.ic_disc), discSize, discSize, false);
+         if(isFirstload) {
+             bitmapDisc = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R
+                     .drawable.ic_disc), discSize, discSize, false);
+             isFirstload=false;
+         }
         Bitmap bitmapMusicPic = getMusicPicBitmap(musicPicSize, imageResource);
         BitmapDrawable discDrawable = new BitmapDrawable(bitmapDisc);
         RoundedBitmapDrawable roundMusicDrawable = RoundedBitmapDrawableFactory.create

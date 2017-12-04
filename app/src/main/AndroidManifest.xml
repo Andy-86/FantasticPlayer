@@ -12,13 +12,7 @@
         android:roundIcon="@mipmap/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".MainActivity" />
 
         <service
             android:name=".service.MusicService"
@@ -26,7 +20,18 @@
             android:exported="true"
             android:process=":remote" />
 
-        <activity android:name=".Acitivity.SplashActivity"></activity>
+        <activity android:name=".activity.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.MusicAcitivity"
+            android:label="@string/title_activity_music_acitivity"
+            android:theme="@style/AppTheme"></activity>
+
     </application>
 
 </manifest>

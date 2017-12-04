@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Fantastic Player</string>
+    <string name="title_activity_music_acitivity">MusicAcitivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="menu_setting">设置</string>
+    <string name="menu_night">夜间模式</string>
+    <string name="menu_timer">定时</string>
+    <string name="menu_exit">退出应用</string>
+    <string name="menu_about">关于应用</string>
+    <string name="local_music">本地</string>
+    <string name="online_music">在线</string>
+    <string name="no_local_music">没有本地音乐</string>
+    <string name="load_fail">加载失败</string>
+    <string name="loading">正在加载</string>
 </resources>

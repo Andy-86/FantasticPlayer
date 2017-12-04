@@ -6,4 +6,11 @@
     <dimen name="play_bar_height">57dp</dimen>
     <dimen name="screen_tips_top">80dp</dimen>
     <dimen name="divider_height">0.5dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="remote_fragment_banner">200dp</dimen>
+    <dimen name="card_corner">6</dimen>
+    <dimen name="card_view_elevation">2</dimen>
+    <dimen name="card_margin">3dp</dimen>
 </resources>
