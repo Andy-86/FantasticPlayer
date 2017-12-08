@@ -12,6 +12,7 @@ import android.os.RemoteException;
 
 import com.example.andy.player.aidl.IMusicPlayer;
 import com.example.andy.player.service.MusicService;
+import com.example.andy.player.tools.CoverLoader;
 import com.example.andy.player.tools.LogUtil;
 
 import java.util.LinkedList;
@@ -49,6 +50,7 @@ public class MyApplication extends Application {
         super.onCreate();
         activities = new LinkedList<>();
         mainTid = android.os.Process.myTid();
+        CoverLoader.getInstance().init(this);
     }
 
     /**

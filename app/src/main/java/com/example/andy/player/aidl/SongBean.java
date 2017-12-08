@@ -29,18 +29,81 @@ public class SongBean implements Parcelable {
     private String m4a;
     private String media_mid;
     private int progress;
-    private int songid;
-    private int singerid;
+    private long songid;
+    private long singerid;
     private String albumname;
     private String downUrl;
     private String singername;
     private String songname;
     private String strMediaMid;
     private String albummid;
+    private String albumName;
+    private long duration;
+    private String path;
+    private String fileName;
+    private String fileSize;
+
+    public String getAlbumName() {
+        return albumName;
+    }
+
+    public void setAlbumName(String albumName) {
+        this.albumName = albumName;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(String fileSize) {
+        this.fileSize = fileSize;
+    }
+
+
+    public long getSongid() {
+        return songid;
+    }
+
+    public void setSongid(long songid) {
+        this.songid = songid;
+    }
+
+    public long getSingerid() {
+        return singerid;
+    }
+
+    public void setSingerid(long singerid) {
+        this.singerid = singerid;
+    }
+
     private String songmid;
     private String albumpic_big;
     private String albumpic_small;
-    private int albumid;
+
 
     public String getM4a() {
         return m4a;
@@ -58,17 +121,13 @@ public class SongBean implements Parcelable {
         this.media_mid = media_mid;
     }
 
-    public int getSongid() {
-        return songid;
-    }
+
 
     public void setSongid(int songid) {
         this.songid = songid;
     }
 
-    public int getSingerid() {
-        return singerid;
-    }
+
 
     public void setSingerid(int singerid) {
         this.singerid = singerid;
@@ -146,13 +205,7 @@ public class SongBean implements Parcelable {
         this.albumpic_small = albumpic_small;
     }
 
-    public int getAlbumid() {
-        return albumid;
-    }
 
-    public void setAlbumid(int albumid) {
-        this.albumid = albumid;
-    }
 
     public SongBean() {
     }
@@ -165,6 +218,7 @@ public class SongBean implements Parcelable {
         this.progress = progress;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -175,39 +229,47 @@ public class SongBean implements Parcelable {
         dest.writeString(this.m4a);
         dest.writeString(this.media_mid);
         dest.writeInt(this.progress);
-        dest.writeInt(this.songid);
-        dest.writeInt(this.singerid);
+        dest.writeLong(this.songid);
+        dest.writeLong(this.singerid);
         dest.writeString(this.albumname);
         dest.writeString(this.downUrl);
         dest.writeString(this.singername);
         dest.writeString(this.songname);
         dest.writeString(this.strMediaMid);
         dest.writeString(this.albummid);
+        dest.writeString(this.albumName);
+        dest.writeLong(this.duration);
+        dest.writeString(this.path);
+        dest.writeString(this.fileName);
+        dest.writeString(this.fileSize);
         dest.writeString(this.songmid);
         dest.writeString(this.albumpic_big);
         dest.writeString(this.albumpic_small);
-        dest.writeInt(this.albumid);
     }
 
     protected SongBean(Parcel in) {
         this.m4a = in.readString();
         this.media_mid = in.readString();
         this.progress = in.readInt();
-        this.songid = in.readInt();
-        this.singerid = in.readInt();
+        this.songid = in.readLong();
+        this.singerid = in.readLong();
         this.albumname = in.readString();
         this.downUrl = in.readString();
         this.singername = in.readString();
         this.songname = in.readString();
         this.strMediaMid = in.readString();
         this.albummid = in.readString();
+        this.albumName = in.readString();
+        this.duration = in.readLong();
+        this.path = in.readString();
+        this.fileName = in.readString();
+        this.fileSize = in.readString();
         this.songmid = in.readString();
         this.albumpic_big = in.readString();
         this.albumpic_small = in.readString();
-        this.albumid = in.readInt();
     }
 
-    public static final Creator<SongBean> CREATOR = new Creator<SongBean>() {
+    public static final Parcelable.Creator<SongBean> CREATOR = new Parcelable.Creator<SongBean>() {
         @Override
         public SongBean createFromParcel(Parcel source) {
             return new SongBean(source);
@@ -218,4 +280,29 @@ public class SongBean implements Parcelable {
             return new SongBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "SongBean{" +
+                "m4a='" + m4a + '\'' +
+                ", media_mid='" + media_mid + '\'' +
+                ", progress=" + progress +
+                ", songid=" + songid +
+                ", singerid=" + singerid +
+                ", albumname='" + albumname + '\'' +
+                ", downUrl='" + downUrl + '\'' +
+                ", singername='" + singername + '\'' +
+                ", songname='" + songname + '\'' +
+                ", strMediaMid='" + strMediaMid + '\'' +
+                ", albummid='" + albummid + '\'' +
+                ", albumName='" + albumName + '\'' +
+                ", duration=" + duration +
+                ", path='" + path + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", fileSize='" + fileSize + '\'' +
+                ", songmid='" + songmid + '\'' +
+                ", albumpic_big='" + albumpic_big + '\'' +
+                ", albumpic_small='" + albumpic_small + '\'' +
+                '}';
+    }
 }

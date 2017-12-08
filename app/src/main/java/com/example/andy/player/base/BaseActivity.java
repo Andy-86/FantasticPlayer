@@ -2,6 +2,7 @@ package com.example.andy.player.base;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -11,6 +12,7 @@ import android.view.View;
 
 import com.example.andy.player.R;
 import com.example.andy.player.application.MyApplication;
+import com.example.andy.player.tools.PermissionReq;
 
 import butterknife.Unbinder;
 
@@ -130,5 +132,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         mSnackBar.setAction("我知道了", null);
         mSnackBar.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionReq.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
