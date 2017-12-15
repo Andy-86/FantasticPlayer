@@ -24,6 +24,7 @@ public class RetrofitUtil {
     }
 
     private static volatile Retrofit mRetrofit;
+    private static volatile Retrofit musicRetrofit;
     private static File cacheDir = MyApplication.getApplication().getCacheDir();
     private static File cacheFile = new File(cacheDir, "cache");
     private static HttpLoggingInterceptor mHttpLoggingInterceptor = new HttpLoggingInterceptor(
@@ -52,6 +53,25 @@ public class RetrofitUtil {
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                             .client(mOkHttpClient)
                             .baseUrl(Contract.BASE_URL)
+                            .build();
+
+                }
+            }
+        }
+        return mRetrofit;
+    }
+
+
+    public static retrofit2.Retrofit getMusicRetrofit() {
+        if (mRetrofit == null) {
+            synchronized (RetrofitUtil.class) {
+                if (mRetrofit == null) {
+                    mHttpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+                    mRetrofit = new Retrofit.Builder()
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                            .client(mOkHttpClient)
+                            .baseUrl(Contract.BASE_MUSIC_URL)
                             .build();
 
                 }

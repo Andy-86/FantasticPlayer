@@ -305,4 +305,9 @@ public class SongBean implements Parcelable {
                 ", albumpic_small='" + albumpic_small + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return ((SongBean)obj).getSongid()==getSongid();
+    }
 }

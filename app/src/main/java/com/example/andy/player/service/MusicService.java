@@ -49,13 +49,23 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         public void action(int actioncode, SongBean songBean) throws RemoteException {
             switch (actioncode) {
                 case MUSIC_ACTION_PLAY:
-                    String path = songBean.getM4a();
+                    String path;
+                    if(songBean.getM4a()!=null)
+                        path = songBean.getM4a();
+                    else
+                         path = songBean.getPath();
                     playSong(path);
-                    LogUtil.doLog("action", "paly:" + path);
+                    LogUtil.doLog("String path", "paly:" + path);
+                    Message msg=Message.obtain();
+                    msg.what=MUSIC_ACTION_PLAY;
+                    sendMessge(MUSIC_ACTION_PLAY,msg);
                     break;
                 case MUSIC_ACTION_PAUSE:
                     pauseSong();
                     LogUtil.doLog("action", "pause");
+                    Message msg2=Message.obtain();
+                    msg2.what=MUSIC_ACTION_PAUSE;
+                    sendMessge(MUSIC_ACTION_PAUSE,msg2);
                     break;
                 case MUSIC_ACTION_STOP:
                     stopSong();
@@ -73,6 +83,9 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
                 case MUSIC_ACTION_CONTINUE_PLAY:
                     continuePlaySong();
                     LogUtil.doLog("action", "continue play");
+                    Message msg3=Message.obtain();
+                    msg3.what=MUSIC_ACTION_CONTINUE_PLAY;
+                    sendMessge(MUSIC_ACTION_CONTINUE_PLAY,msg3);
                     break;
                 case MUSIC_ACTION_SEEK_PLAY:
                     int progerss=songBean.getProgress();

@@ -35,6 +35,7 @@ public class LocalMusicFragment extends MvpFragment<LocalPresenter> {
     TextView tvEmpty;
     Unbinder unbinder;
     LocalMusicAdapter adapter;
+    List<SongBean> mlist;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -86,13 +87,18 @@ public class LocalMusicFragment extends MvpFragment<LocalPresenter> {
             @Override
             protected void onPostExecute(List<SongBean> list) {
                 LogUtil.doLog("onPostExecute",""+list.get(0));
-                adapter=new LocalMusicAdapter(getActivity(),list);
-                lvLocalMusic.setLayoutManager(new LinearLayoutManager(getActivity()));
-                lvLocalMusic.setAdapter(adapter);
+                if(adapter==null) {
+                    adapter = new LocalMusicAdapter(getActivity(), list);
+                    mlist = list;
+                    lvLocalMusic.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    lvLocalMusic.setAdapter(adapter);
+                }
 
             }
         }.execute();
     }
 
-
+    public List<SongBean> getList(){
+        return mlist;
+    }
 }

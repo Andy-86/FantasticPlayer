@@ -16,12 +16,14 @@ public class RemoteMusicFragment extends MvpFragment<RemotePresenter>{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mPresenter.getTheMainlandHotSearchList();
         return super.onCreateView(inflater, container, savedInstanceState);
+
     }
 
     @Override
     public RemotePresenter createPresenter() {
-        return null;
+        return new RemotePresenter();
     }
 
     @Override

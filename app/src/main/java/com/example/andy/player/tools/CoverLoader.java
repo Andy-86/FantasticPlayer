@@ -137,7 +137,7 @@ public class CoverLoader {
        return bitmap;
     }
 
-    /**
+     /**
      * 从媒体库加载封面<br>
      * 本地音乐
      */

@@ -12,6 +12,9 @@ import android.widget.TextView;
 import com.example.andy.player.R;
 import com.example.andy.player.aidl.SongBean;
 import com.example.andy.player.tools.CoverLoader;
+import com.example.andy.player.tools.SongEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -39,11 +42,17 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.My
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         holder.tvArtist.setText(data.get(position).getSingername());
         holder.tvTitle.setText(data.get(position).getSongname());
         Bitmap cover = CoverLoader.getInstance().loadThumbnail(data.get(position));
         holder.ivCover.setImageBitmap(cover);
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new SongEvent(data.get(position)));
+            }
+        });
     }
 
     @Override
@@ -52,12 +61,14 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.My
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
+        View view;
         ImageView ivCover;
         TextView tvTitle;
         TextView tvArtist;
         ImageView ivMore;
         public MyViewHolder(View itemView) {
             super(itemView);
+            view=itemView;
             ivCover=(ImageView)itemView.findViewById(R.id.iv_cover);
             tvTitle=(TextView)itemView.findViewById(R.id.tv_title);
             tvArtist=(TextView)itemView.findViewById(R.id.tv_artist);
