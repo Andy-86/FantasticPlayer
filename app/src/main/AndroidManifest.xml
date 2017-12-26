@@ -30,7 +30,7 @@
             android:name=".service.MusicService"
             android:enabled="true"
             android:exported="true"
-            android:process=":remote" />
+            android:process="com.andy.music.server" />
 
         <activity android:name=".activity.SplashActivity">
             <intent-filter>
@@ -42,8 +42,10 @@
         <activity
             android:name=".activity.MusicAcitivity"
             android:label="@string/title_activity_music_acitivity"
-            android:theme="@style/AppTheme"></activity>
-
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activity.HotSonglistDetailAcitvity" />
+        <activity android:name=".mvp.search.SearchMusicActivity"></activity>
     </application>
 
 </manifest>

@@ -2,7 +2,7 @@ package com.example.andy.player.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * Created by andy on 2017/12/1.
  */
 
-public class FragmentAdapter extends FragmentPagerAdapter {
+public class FragmentAdapter extends FragmentStatePagerAdapter {
     List<Fragment> list;
     public FragmentAdapter(FragmentManager fm) {
         super(fm);
@@ -31,4 +31,5 @@ public class FragmentAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return list.size();
     }
+
 }

@@ -61,7 +61,6 @@ public class LocalMusicFragment extends MvpFragment<LocalPresenter> {
 
     @Override
     protected void initEvent() {
-
     }
 
     @Override

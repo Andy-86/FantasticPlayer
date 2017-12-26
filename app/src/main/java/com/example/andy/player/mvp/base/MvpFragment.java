@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 
-import com.example.andy.player.base.BaseFragment;
+import com.example.andy.player.bean.BaseFragment;
 
 
 /**

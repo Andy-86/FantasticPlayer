@@ -3,6 +3,7 @@ package com.example.andy.player.mvp.paly;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.andy.player.R;
 import com.example.andy.player.activity.MusicAcitivity;
 import com.example.andy.player.aidl.IMusicPlayer;
@@ -33,6 +35,7 @@ import com.example.andy.player.tools.CoverLoader;
 import com.example.andy.player.tools.DiskDimenUtils;
 import com.example.andy.player.tools.LogUtil;
 import com.example.andy.player.tools.SongEvent;
+import com.example.andy.player.tools.Transformer;
 import com.example.andy.player.weight.Dislayout;
 import com.example.andy.player.weight.DisplayLayout;
 
@@ -41,6 +44,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -111,7 +115,7 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
     private SimpleDateFormat mFormatter = new SimpleDateFormat("mm:ss");
     private MusicPlayListner listner = new MusicPlayListner.Stub() {
         @Override
-        public void action(int actioncode, Message message) throws RemoteException {
+        public void action(int actioncode, Message message,SongBean songBean) throws RemoteException {
             mHandler.sendMessage(message);
         }
     };
@@ -162,11 +166,23 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
         return view;
     }
 
+    /**
+     * 在Fragment启动完毕后才进行Service的基础设置和控制
+     * @param view
+     * @param savedInstanceState
+     */
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        dislayout.setImageResourse((ArrayList<SongBean>) songList,null);
+        //判断是否为本地歌曲  假如是的话 就直接在里面选择就可以了 加入是远程这则还要添加多一个songbean
+
         if(songEvent!=null){
+        if(songEvent.getSongBean().getM4a()==null){
             activityCallPlay(songEvent);
+        }else {
+            startWithNetWorkSong(songEvent.getSongBean());
+        }
         }
     }
 
@@ -261,7 +277,7 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
     }
 
 
-    @OnClick({R.id.ivLast, R.id.ivPlayOrPause, R.id.ivNext,R.id.iv_back})
+    @OnClick({R.id.ivLast, R.id.ivPlayOrPause, R.id.ivNext,R.id.iv_back,R.id.llPlayOption})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivLast:
@@ -294,6 +310,8 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
                 break;
             case R.id.iv_back:
                 ((MusicAcitivity)getActivity()).hidePlayingFragment();
+                break;
+            case R.id.llPlayOption:
                 break;
         }
     }
@@ -376,7 +394,7 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
     /**
      * 假如进度是0就直接开始
      */
-    public void starPalyMusic(SongBean songBean) {
+    public void starPalyMusic(final SongBean songBean) {
         setSongbeanToTitle(songBean);
         try {
             mMusicService.action(MusicService.MUSIC_ACTION_PLAY, songBean);
@@ -384,9 +402,44 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
             e.printStackTrace();
         }
         //设置背景
+        if(songBean.getM4a()==null){
         Bitmap cover = CoverLoader.getInstance().loadThumbnail(songBean);
         setFreground.setForeground(DiskDimenUtils.getForegroundDrawable(cover, getActivity()));
         setFreground.beginAnimation();
+        }else {
+
+            mPresenter.toGetTheLyrics((int) songBean.getSongid());
+
+            new AsyncTask<Void,Integer,Bitmap>(){
+                @Override
+                protected Bitmap doInBackground(Void... voids) {
+                    Bitmap bitmap;
+
+                    try {
+                         bitmap= Glide.with(getActivity())
+                                .load(songBean.getAlbumpic_big())
+                                .asBitmap() //必须
+                                .centerCrop()
+                                .into(200, 200)
+                                .get();
+                      return bitmap;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Bitmap bitmap) {
+                    setFreground.setForeground(DiskDimenUtils.getForegroundDrawable(bitmap, getActivity()));
+                    setFreground.beginAnimation();
+                }
+            }.execute();
+
+        }
+
     }
 
     /**
@@ -455,7 +508,7 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
 //        setFreground.beginAnimation();
 
         //设置转盘的图片
-        dislayout.setImageResourse((ArrayList<SongBean>) songList,songList.indexOf(songEvent.getSongBean()));
+        dislayout.setcurrentItem(index);
         dislayout.doPlay();
         int index=songList.indexOf(songBean);
         this.index=index;
@@ -486,6 +539,32 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
             return songList.get(index);
         }else
             return null;
+    }
+
+
+    public void startWithNetWorkSong(SongBean songBean){
+        starPalyMusic(songBean);
+        this.index=songList.size()-1;
+        dislayout.setcurrentItem(index);
+        dislayout.doPlay();
+    }
+
+    public void addNewNetWorkSong(SongBean songBean){
+        if(!songList.contains(songBean)) {
+            songList.add(songBean);
+            this.index = songList.size() - 1;
+            musicSeekBar.setProgress(0);
+            pause();
+            palyOrPause();
+            dislayout.setcurrentItem(index);
+            dislayout.addbitmap(songBean);
+            dislayout.doPlay();
+        }
+    }
+
+    public void onloadLyr(String lyric){
+        lrcView.loadLrc(Transformer.transformToLyr(lyric));
+        lrcView.updateTime(0);
     }
 
 }

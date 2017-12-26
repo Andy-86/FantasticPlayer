@@ -4,7 +4,7 @@ package com.example.andy.player.mvp.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.example.andy.player.base.BaseActivity;
+import com.example.andy.player.bean.BaseActivity;
 
 
 /**

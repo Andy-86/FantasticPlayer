@@ -9,6 +9,10 @@ import com.example.andy.player.aidl.SongBean;
 public class SongEvent {
     public SongBean songBean;
 
+    /**
+     *
+     * @param songBean 初始化的songbean
+     */
     public SongEvent(SongBean songBean) {
         this.songBean = songBean;
     }

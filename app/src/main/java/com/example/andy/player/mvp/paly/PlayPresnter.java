@@ -1,6 +1,8 @@
 package com.example.andy.player.mvp.paly;
 
 import com.example.andy.player.aidl.SongBean;
+import com.example.andy.player.bean.AbstractResultUtil;
+import com.example.andy.player.bean.Lyric;
 import com.example.andy.player.mvp.base.BasePresenter;
 import com.example.andy.player.tools.LogUtil;
 
@@ -40,5 +42,31 @@ public class PlayPresnter extends BasePresenter<PlayFragment,PlayModle> {
             }
         };
         mModel.getSongs(observer);
+    }
+
+    public void toGetTheLyrics(int musicid){
+        Observer<AbstractResultUtil<Lyric>> observer=new Observer<AbstractResultUtil<Lyric>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(AbstractResultUtil<Lyric> value) {
+               // LogUtil.doLog("onNext",""+value.getShowapi_res_body().getLyric());
+                (mView).onloadLyr(value.getShowapi_res_body().getLyric());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+        mModel.toGetTheLyrics(observer,musicid);
     }
 }

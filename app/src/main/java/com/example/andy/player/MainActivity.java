@@ -84,7 +84,7 @@ public class MainActivity extends MvpActivity<PlayPresnter> implements IplayStat
     private SimpleDateFormat mFormatter = new SimpleDateFormat("mm:ss");
     private MusicPlayListner listner = new MusicPlayListner.Stub() {
         @Override
-        public void action(int actioncode, Message message) throws RemoteException {
+        public void action(int actioncode, Message message,SongBean songBean) throws RemoteException {
             mHandler.sendMessage(message);
         }
     };
@@ -417,6 +417,11 @@ public class MainActivity extends MvpActivity<PlayPresnter> implements IplayStat
         }
         LogUtil.doLog("getLrcText", "" + lrcText);
         return lrcText;
+    }
+
+    public void onloadLyr(String lyric){
+        lrcView.loadLrc(lyric);
+        lrcView.updateTime(0);
     }
 
 }

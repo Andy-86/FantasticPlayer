@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -32,9 +34,12 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
     public static final int MUSIC_ACTION_CONTINUE_PLAY = 0xff006;
     public static final int MUSIC_ACTION_SEEK_PLAY = 0xff007;
     public static final int MUSIC_ACTION_COMPLETE = 0xff008;
+    public static final  int MUSIC_ACTION_ERROR=0xff009;
+    public static final String SONGBEAN="Songbean";
     private RemoteCallbackList<MusicPlayListner> remoteCallbackList = new RemoteCallbackList<>();
     private Timer timer;
-
+    private static final String TAG="MusicService";
+    private SongBean songBean;
     @Override
     public void onCreate() {
         init();
@@ -50,6 +55,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
             switch (actioncode) {
                 case MUSIC_ACTION_PLAY:
                     String path;
+                    setSongBean(songBean);
                     if(songBean.getM4a()!=null)
                         path = songBean.getM4a();
                     else
@@ -72,11 +78,13 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
                     break;
                 case MUSIC_ACTION_LAST:
                     stopSong();
+                    setSongBean(songBean);
                     String path2 = (String) songBean.getM4a();
                     playSong(path2);
                     break;
                 case MUSIC_ACTION_NEXT:
                     stopSong();
+                    setSongBean(songBean);
                     String path3 = (String) songBean.getM4a();
                     playSong(path3);
                     break;
@@ -111,6 +119,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
     }
 
     private MediaPlayer mMediaPlayer;
+    private MediaPlayer onlinePlayer;
     private Handler handler;
 
     public void init() {
@@ -121,6 +130,13 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         mMediaPlayer.setOnCompletionListener(this);
         ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).
                 requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+    }
+
+    public void initOnlinePlyer(){
+        onlinePlayer=new MediaPlayer();
+        onlinePlayer.setOnErrorListener(this);
+        onlinePlayer.setOnPreparedListener(this);
+        onlinePlayer.setOnCompletionListener(this);
     }
 
     @Override
@@ -137,11 +153,22 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
+        LogUtil.doLog("onError",""+what+extra);
+        if(songBean.getM4a()!=null) {
+            Message message = Message.obtain();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("SongBean", songBean);
+            message.setData(bundle);
+            message.what = MUSIC_ACTION_ERROR;
+            sendMessge(MUSIC_ACTION_ERROR, message);
+        }
+        mMediaPlayer.reset();
         return false;
     }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        mMediaPlayer.start();
         if (timer == null)
             timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -156,12 +183,14 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
      * 更新进度
      */
     private synchronized void updateProgress() {
-        Message msg = Message.obtain();
-        msg.arg1 = mMediaPlayer.getCurrentPosition();
-        msg.arg2 = mMediaPlayer.getDuration();
-        msg.what = MUSIC_ACTION_SEEK_PLAY;
-        LogUtil.doLog("updateProgress",""+mMediaPlayer.getCurrentPosition());
-        sendMessge(MUSIC_ACTION_PLAY,msg);
+        if(mMediaPlayer.isPlaying()) {
+            Message msg = Message.obtain();
+            msg.arg1 = mMediaPlayer.getCurrentPosition();
+            msg.arg2 = mMediaPlayer.getDuration();
+            msg.what = MUSIC_ACTION_SEEK_PLAY;
+            LogUtil.doLog("updateProgress", "" + mMediaPlayer.getCurrentPosition());
+            sendMessge(MUSIC_ACTION_PLAY, msg);
+        }
     }
 
     /**
@@ -174,7 +203,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         for (int i = 0; i < n; i++) {
             MusicPlayListner listner = remoteCallbackList.getBroadcastItem(i);
             try {
-                listner.action(action, msg);
+                listner.action(action, msg,songBean);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -184,11 +213,18 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
 
     public synchronized void playSong(String path) {
         try {
-            stopSong();
+            if(songBean.getM4a()!=null)
+            {
+                Uri uri=Uri.parse(path);
+                mMediaPlayer.reset();//idle
+                mMediaPlayer.setDataSource(this,uri);
+                mMediaPlayer.prepareAsync();
+                return;
+            }
             mMediaPlayer.reset();//idle
             mMediaPlayer.setDataSource(path);
-            mMediaPlayer.prepare();
-            mMediaPlayer.start();
+            mMediaPlayer.prepareAsync();
+
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -231,4 +267,8 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         return mybinder;
     }
 
+
+    public void setSongBean(SongBean songBean) {
+        this.songBean = songBean;
+    }
 }

@@ -6,8 +6,12 @@ import com.example.andy.player.application.MyApplication;
 import com.example.andy.player.contract.Contract;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.disposables.Disposable;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -20,9 +24,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class RetrofitUtil {
+    private static List<Disposable> mCallList=new ArrayList<>();
+
+    /**
+     * when i use the activity-model-power
+     */
     private RetrofitUtil() {
     }
-
     private static volatile Retrofit mRetrofit;
     private static volatile Retrofit musicRetrofit;
     private static File cacheDir = MyApplication.getApplication().getCacheDir();
@@ -78,5 +86,27 @@ public class RetrofitUtil {
             }
         }
         return mRetrofit;
+    }
+
+
+    public static void cancelDisposable() {
+        synchronized (mCallList) {
+            Iterator<Disposable> iterator = mCallList.iterator();
+            while (iterator.hasNext()) {
+                Disposable call = iterator.next();
+                if (call == null || call.isDisposed()) {
+                    continue;
+                }
+                call.dispose();
+                iterator.remove();
+            }
+        }
+    }
+
+    public static void addDisposable(Disposable call) {
+        synchronized (mCallList) {
+            mCallList.add(call);
+
+        }
     }
 }

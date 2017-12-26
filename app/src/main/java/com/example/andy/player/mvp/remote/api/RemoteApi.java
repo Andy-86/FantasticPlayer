@@ -1,7 +1,7 @@
 package com.example.andy.player.mvp.remote.api;
 
-import com.example.andy.player.base.AbstractResultUtil;
-import com.example.andy.player.base.HotSongResult;
+import com.example.andy.player.bean.AbstractResultUtil;
+import com.example.andy.player.bean.HotSongResult;
 
 import io.reactivex.Observable;
 import retrofit2.http.Field;

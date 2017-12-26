@@ -1,4 +1,4 @@
-package com.example.andy.player.base;
+package com.example.andy.player.bean;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import java.util.List;
  */
 
 public class Inner {
+    public int ret_code;
     List<HotSong> songlist;
 
     public List<HotSong> getSonglist() {

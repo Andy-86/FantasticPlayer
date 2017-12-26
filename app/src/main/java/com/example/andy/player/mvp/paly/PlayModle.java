@@ -1,6 +1,9 @@
 package com.example.andy.player.mvp.paly;
 
 import com.example.andy.player.aidl.SongBean;
+import com.example.andy.player.bean.AbstractResultUtil;
+import com.example.andy.player.bean.Lyric;
+import com.example.andy.player.contract.Contract;
 import com.example.andy.player.mvp.base.BaseModel;
 import com.example.andy.player.mvp.paly.Api.PlayService;
 import com.example.andy.player.tools.RetrofitUtil;
@@ -26,6 +29,17 @@ public class PlayModle extends BaseModel<PlayPresnter>{
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
+    }
+
+    public void toGetTheLyrics(Observer<AbstractResultUtil<Lyric>> observer, int musicid){
+        Retrofit retrofit= RetrofitUtil.getMusicRetrofit();
+        PlayService api=retrofit.create(PlayService.class);
+        api.getTheLyrics(Contract.appid,Contract.sign,System.currentTimeMillis(),musicid)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
+
     }
 
 }

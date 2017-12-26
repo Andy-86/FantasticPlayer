@@ -1,10 +1,10 @@
-package com.example.andy.player.mvp.remote;
+package com.example.andy.player.mvp.search;
 
 import com.example.andy.player.bean.AbstractResultUtil;
-import com.example.andy.player.bean.HotSongResult;
+import com.example.andy.player.bean.SearchResult;
 import com.example.andy.player.contract.Contract;
 import com.example.andy.player.mvp.base.BaseModel;
-import com.example.andy.player.mvp.remote.api.RemoteApi;
+import com.example.andy.player.mvp.search.api.SearchApi;
 import com.example.andy.player.tools.RetrofitUtil;
 
 import io.reactivex.Observer;
@@ -13,23 +13,22 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 /**
- * Created by andy on 2017/12/1.
+ * Created by andy on 2017/12/25.
  */
 
-public class RemoteModle extends BaseModel<RemotePresenter>{
-    public RemoteModle(RemotePresenter presenter) {
+public class SearchModle extends BaseModel<SearchPresenter>{
+    public SearchModle(SearchPresenter presenter) {
         super(presenter);
     }
 
-    public void getSongList(Observer<AbstractResultUtil<HotSongResult>> observer,int tipid){
+    public void searchReuslt(Observer<AbstractResultUtil<SearchResult>> observer, String keyword,int page){
         Retrofit retrofit= RetrofitUtil.getMusicRetrofit();
-        RemoteApi api=retrofit.create(RemoteApi.class);
-        api.getHotList(Contract.appid,Contract.sign,System.currentTimeMillis(),tipid)
-        .subscribeOn(Schedulers.io())
+        SearchApi api=retrofit.create(SearchApi.class);
+        api.searchResult(Contract.appid,Contract.sign,System.currentTimeMillis(),keyword,page)
+                .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
 
     }
-
 }

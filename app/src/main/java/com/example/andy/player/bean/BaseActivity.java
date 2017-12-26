@@ -1,4 +1,4 @@
-package com.example.andy.player.base;
+package com.example.andy.player.bean;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;

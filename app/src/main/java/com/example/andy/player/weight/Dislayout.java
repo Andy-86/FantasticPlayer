@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
@@ -23,6 +24,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
 import com.example.andy.player.R;
 import com.example.andy.player.adapter.DisViewPageAdapter;
 import com.example.andy.player.aidl.SongBean;
@@ -34,8 +36,11 @@ import com.example.andy.player.tools.MusicUtil;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static android.content.ContentValues.TAG;
 
@@ -388,6 +393,15 @@ public class Dislayout extends RelativeLayout {
 
     }
 
+
+    public void addOneBitmap(SongBean songBean){
+        View discLayout = LayoutInflater.from(getContext()).inflate(R.layout.layout_disc,
+                mVpContain, false);
+        ImageView disc = (ImageView) discLayout.findViewById(R.id.play_disc);
+        disc.setImageDrawable(getDiscDrawable(songBean));
+        mDiscLayouts.add(discLayout);
+        disObjectAnis.add(getDiscObjectAnimator(disc, 1));
+    }
     /**
      * 将圆形的底盘和图片结合形成一个Drawable返回
      *
@@ -406,7 +420,37 @@ public class Dislayout extends RelativeLayout {
         BitmapDrawable discDrawable = new BitmapDrawable(bitmapDisc);
         RoundedBitmapDrawable roundMusicDrawable = RoundedBitmapDrawableFactory.create
                 (getResources(), bitmapMusicPic);
+        //抗锯齿
+        discDrawable.setAntiAlias(true);
+        roundMusicDrawable.setAntiAlias(true);
 
+        Drawable[] drawables = new Drawable[2];
+        drawables[0] = roundMusicDrawable;
+        drawables[1] = discDrawable;
+
+        LayerDrawable layerDrawable = new LayerDrawable(drawables);
+        int musicPicMargin = (int) ((DiskDimenUtils.SCALE_DISC_SIZE - DiskDimenUtils
+                .SCALE_MUSIC_PIC_SIZE) * mScreenWidth / 2);
+        //调整专辑图片的四周边距，让其显示在正中
+        layerDrawable.setLayerInset(0, musicPicMargin, musicPicMargin, musicPicMargin,
+                musicPicMargin);
+
+        return layerDrawable;
+    }
+
+
+    private Drawable getDiscDrawableWithBitmap(Bitmap bitmap) {
+        int discSize = (int) (mScreenWidth * DiskDimenUtils.SCALE_DISC_SIZE);
+        int musicPicSize = (int) (mScreenWidth * DiskDimenUtils.SCALE_MUSIC_PIC_SIZE);
+        if(isFirstload) {
+            bitmapDisc = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R
+                    .drawable.ic_disc), discSize, discSize, false);
+            isFirstload=false;
+        }
+        Bitmap bitmapMusicPic = bitmap;
+        BitmapDrawable discDrawable = new BitmapDrawable(bitmapDisc);
+        RoundedBitmapDrawable roundMusicDrawable = RoundedBitmapDrawableFactory.create
+                (getResources(), bitmapMusicPic);
         //抗锯齿
         discDrawable.setAntiAlias(true);
         roundMusicDrawable.setAntiAlias(true);
@@ -432,29 +476,63 @@ public class Dislayout extends RelativeLayout {
      * @param InputStream 图片的输入流
      * @return
      */
-    private Bitmap getMusicPicBitmap(int musicPicSize, SongBean  songBean) {
+    private Bitmap getMusicPicBitmap(final int musicPicSize, final SongBean  songBean) {
+        if(songBean.getM4a()==null) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         /**
          * 预先加载图片的基本信息
          */
-        ContentResolver resolver = MyApplication.getContext().getContentResolver();
-        Uri uri = MusicUtil.getMediaStoreAlbumCoverUri(Long.valueOf(songBean.getAlbummid()));
-        BitmapFactory.decodeFile(uri.getPath(), options);
-        int imageWidth = options.outWidth;
+            ContentResolver resolver = MyApplication.getContext().getContentResolver();
+            Uri uri = MusicUtil.getMediaStoreAlbumCoverUri(Long.valueOf(songBean.getAlbummid()));
+            BitmapFactory.decodeFile(uri.getPath(), options);
+            int imageWidth = options.outWidth;
 
-        int sample = imageWidth / musicPicSize;
-        int dstSample = 1;
-        if (sample > dstSample) {
-            dstSample = sample;
+            int sample = imageWidth / musicPicSize;
+            int dstSample = 1;
+            if (sample > dstSample) {
+                dstSample = sample;
+            }
+            options.inJustDecodeBounds = false;
+            //设置图片采样率
+            options.inSampleSize = dstSample;
+            //设置图片解码格式因为JPG假如用ARGB_8888的话大一半
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            return Bitmap.createScaledBitmap(CoverLoader.getInstance().loadThumbnail(songBean), musicPicSize, musicPicSize, true);
+        }else {
+            new AsyncTask<Void, Integer, Drawable>(){
+
+                @Override
+                protected Drawable doInBackground(Void... voids) {
+                    try {
+                         Bitmap bitmap=Glide.with(MyApplication.getContext())
+                                .load(songBean.getAlbumpic_big())
+                                .asBitmap() //必须
+                                .centerCrop()
+                                .into(musicPicSize, musicPicSize)
+                                .get();
+
+                         return getDiscDrawableWithBitmap(bitmap);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Drawable drawable) {
+                    super.onPostExecute(drawable);
+                    View dislayout= mDiscLayouts.get(songlist.indexOf(songBean));
+                    ImageView disc = (ImageView) dislayout.findViewById(R.id.play_disc);
+                    disc.setImageDrawable(drawable);
+                }
+            }.execute();
+            Bitmap bitmap=BitmapFactory.decodeResource(MyApplication.getContext().getResources(),R.drawable.default_cover);
+            return bitmap;
         }
-        options.inJustDecodeBounds = false;
-        //设置图片采样率
-        options.inSampleSize = dstSample;
-        //设置图片解码格式因为JPG假如用ARGB_8888的话大一半
-        options.inPreferredConfig = Bitmap.Config.RGB_565;
 
-        return Bitmap.createScaledBitmap(CoverLoader.getInstance().loadThumbnail(songBean), musicPicSize, musicPicSize, true);
     }
 
     /**
@@ -512,7 +590,7 @@ public class Dislayout extends RelativeLayout {
     }
 
     public int toNext() {
-        if (mVpContain.getCurrentItem() != 2) {
+        if (mVpContain.getCurrentItem() != songlist.size()) {
             doNextOrLast = true;
             //因为他调用sercurrent的话没用调用Dragger状态  只有setting和IDEL
             if (musicStatus == MusicStatus.PLAY) {
@@ -553,11 +631,19 @@ public class Dislayout extends RelativeLayout {
         playAnimator();
     }
     //每次开始的时候要初始化唱盘的界面的图片
-    public void setImageResourse(ArrayList<SongBean> bitmaps,int index) {
+    public void setImageResourse(ArrayList<SongBean> bitmaps,SongBean songBean) {
         this.songlist=bitmaps;
         initViewList();
         mViewPagerAdapter.notifyDataSetChanged();
-        mVpContain.setCurrentItem(index);
+        if(songBean!=null)
+        mVpContain.setCurrentItem(songlist.indexOf(songBean));
+    }
+
+    public void addbitmap(SongBean bean){
+        addOneBitmap(bean);
+        mViewPagerAdapter.notifyDataSetChanged();
+        mVpContain.setCurrentItem(songlist.indexOf(bean));
+
     }
 
     public void setcurrentItem(int index){
