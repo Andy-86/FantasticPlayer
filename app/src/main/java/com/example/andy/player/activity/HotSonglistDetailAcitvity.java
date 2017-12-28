@@ -1,8 +1,10 @@
 package com.example.andy.player.activity;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +19,7 @@ import com.example.andy.player.bean.BaseActivity;
 import com.example.andy.player.bean.SongListInfo;
 import com.example.andy.player.mvp.remote.RemoteMusicFragment;
 import com.example.andy.player.tools.LogUtil;
+import com.example.andy.player.tools.ShareOnlineMusic;
 import com.example.andy.player.tools.SongEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -103,11 +106,46 @@ public class HotSonglistDetailAcitvity extends BaseActivity {
                 EventBus.getDefault().post(new SongEvent(songBean));
                 fin();
             }
+
+            @Override
+            public void onMoreClick(SongBean songBean) {
+                onMoreClicks(songBean);
+            }
         };
         hotSongListAdapter.setListner(listner);
     }
 
     public void fin(){
         finish();
+    }
+
+    private void onMoreClicks(final SongBean songBean){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(HotSonglistDetailAcitvity.this);
+        dialog.setTitle(songBean.getSongname());
+//        String path = FileUtils.getMusicDir() + FileUtils.getMp3FileName(song.getArtistname(), song.getSongname());
+//        File file = new File(path);
+        int itemsId =  R.array.search_music_dialog;
+        dialog.setItems(itemsId, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:// 分享
+                        share(songBean);
+                        break;
+                    case 1:// 下载
+                        download(songBean);
+                        break;
+                }
+            }
+        });
+        dialog.show();
+    }
+
+    private void download(SongBean songBean) {
+
+    }
+
+    private void share(SongBean songBean) {
+        new ShareOnlineMusic(this, songBean).execute();
     }
 }

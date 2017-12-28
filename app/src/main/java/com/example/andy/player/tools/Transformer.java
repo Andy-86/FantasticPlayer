@@ -31,6 +31,7 @@ public class Transformer {
 
 
     public static String transformToLyr(String s){
+        if(s!=null){
         String s1=s.replaceAll("&#10;", "\n");
         String s2=s1.replaceAll("&#58;", ":");
         String s3=s2.replaceAll("&#46;", ".");
@@ -40,6 +41,8 @@ public class Transformer {
         String s7=s6.replaceAll("&#38;", "&");
         String s8=s7.replaceAll("&#45;", "-");
         System.out.println(s8);
-        return s8;
+        return s8;}else {
+            return null;
+        }
     }
 }

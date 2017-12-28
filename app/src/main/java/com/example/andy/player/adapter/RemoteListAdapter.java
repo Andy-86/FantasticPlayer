@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.andy.player.R;
+import com.example.andy.player.activity.MusicAcitivity;
 import com.example.andy.player.bean.SongListInfo;
 
 import java.util.List;
@@ -67,7 +68,7 @@ public class RemoteListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((SongLisViewHolder)holder).linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(listner!=null)
+                    if(listner!=null&& (!MusicAcitivity.isPlayFragmentShow))
                     listner.onClick(info);
                 }
             });

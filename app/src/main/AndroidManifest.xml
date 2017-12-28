@@ -46,6 +46,13 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".activity.HotSonglistDetailAcitvity" />
         <activity android:name=".mvp.search.SearchMusicActivity"></activity>
+
+        <!--高德地图-->
+        <meta-data android:name="com.amap.api.v2.apikey" android:value="b238f229d9008944aa70162df1dd1d98">
+        </meta-data>
+        <!-- 定位需要的服务 -->
+        <service android:name="com.amap.api.location.APSService">
+        </service>
     </application>
 
 </manifest>

@@ -40,7 +40,7 @@ public class HotSongListAdapter extends RecyclerView.Adapter<HotSongListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
 
         final SongBean songBean=list.get(position);
         if(songBean!=null) {
@@ -55,6 +55,13 @@ public class HotSongListAdapter extends RecyclerView.Adapter<HotSongListAdapter.
                 @Override
                 public void onClick(View v) {
                     listner.onClick(songBean);
+                }
+            });
+
+            holder.more.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listner.onMoreClick(list.get(position));
                 }
             });
         }
@@ -83,5 +90,6 @@ public class HotSongListAdapter extends RecyclerView.Adapter<HotSongListAdapter.
 
     public interface OnRItemClickListner {
         public void onClick(SongBean songBean);
+        public void onMoreClick(SongBean songBean);
     }
 }

@@ -14,6 +14,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +33,6 @@ import com.example.andy.player.application.MyApplication;
 import com.example.andy.player.bean.BaseActivity;
 import com.example.andy.player.mvp.local.LocalMusicFragment;
 import com.example.andy.player.mvp.paly.PlayFragment;
-import com.example.andy.player.mvp.remote.RemoteMusicFragment;
 import com.example.andy.player.mvp.search.SearchMusicActivity;
 import com.example.andy.player.service.MusicService;
 import com.example.andy.player.tools.CoverLoader;
@@ -41,6 +41,7 @@ import com.example.andy.player.tools.PermissionUtils;
 import com.example.andy.player.tools.RetrofitUtil;
 import com.example.andy.player.tools.SongEvent;
 import com.example.andy.player.tools.ToastUtil;
+import com.example.andy.player.tools.WeatherExecutor;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -87,9 +88,11 @@ public class MusicAcitivity extends BaseActivity
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     private FragmentAdapter fragmentAdapter;
-    private boolean isPlayFragmentShow = false;
+    public static boolean isPlayFragmentShow = false;
     private PlayFragment mPlayFragment;
     public static SongBean needToPlay;
+    private View vNavigationHeader;
+
 
     private MusicPlayListner listner = new MusicPlayListner.Stub() {
         @Override
@@ -167,6 +170,10 @@ public class MusicAcitivity extends BaseActivity
         /**
          * 注册监听器
          */
+        // add navigation header
+        vNavigationHeader = LayoutInflater.from(this).inflate(R.layout.nav_header_music_acitivity, navView, false);
+        navView.addHeaderView(vNavigationHeader);
+        updateWeather();
         try {
             mMusicService.registListner(listner);
         } catch (RemoteException e) {
@@ -174,10 +181,9 @@ public class MusicAcitivity extends BaseActivity
         }
         EventBus.getDefault().register(this);
         fragmentAdapter = new FragmentAdapter(getSupportFragmentManager());
-        fragmentAdapter.addFragment(new LocalMusicFragment());
-        fragmentAdapter.addFragment(new RemoteMusicFragment());
         viewpager.setAdapter(fragmentAdapter);
         viewpager.addOnPageChangeListener(this);
+        viewpager.setDrawingCacheEnabled(true);
         tvLocalMusic.setSelected(true);
         PermissionUtils.RequestReadAndWriteExt(this, comfirmListener);
     }
@@ -225,6 +231,7 @@ public class MusicAcitivity extends BaseActivity
                 viewpager.setCurrentItem(1);
                 break;
             case R.id.fl_play_bar:
+                if(mPlayFragment!=null)
                 showPlayingFragment();
                 break;
             case R.id.iv_search:
@@ -380,5 +387,29 @@ public class MusicAcitivity extends BaseActivity
         }else {
             super.onBackPressed();
         }
+    }
+    private void updateWeather() {
+
+        PermissionUtils.ComfirmListener locationListener = new PermissionUtils.ComfirmListener() {
+            @Override
+            public void granted(String prmission) {
+                switch (prmission) {
+                    case Manifest.permission.ACCESS_FINE_LOCATION:
+
+                        new WeatherExecutor(MusicAcitivity.this, vNavigationHeader);
+
+                }
+            }
+
+            @Override
+            public void denied(String prmission) {
+                switch (prmission) {
+                    case Manifest.permission.ACCESS_FINE_LOCATION:
+                        LogUtil.doLog("denied", "无法定位");
+
+                }
+            }
+        };
+        PermissionUtils.RequsetLocationServer(this, locationListener);
     }
 }

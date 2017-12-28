@@ -44,4 +44,5 @@ public abstract class MvpFragment<P extends BasePresenter> extends BaseFragment 
         }
         mSnackBar.show();
     }
+
 }

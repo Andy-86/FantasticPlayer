@@ -45,6 +45,11 @@ public class LocalMusicFragment extends MvpFragment<LocalPresenter> {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public LocalPresenter createPresenter() {
         return null;
     }
