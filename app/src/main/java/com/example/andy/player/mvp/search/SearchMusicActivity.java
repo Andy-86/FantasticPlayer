@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import com.example.andy.player.R;
 import com.example.andy.player.adapter.SearchListAdapter;
 import com.example.andy.player.aidl.SongBean;
 import com.example.andy.player.mvp.base.MvpActivity;
+import com.example.andy.player.tools.ToastUtil;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -31,6 +33,8 @@ public class SearchMusicActivity extends MvpActivity<SearchPresenter> implements
     TextView tvLoadingText;
     @BindView(R.id.tv_load_fail_text)
     TextView tvLoadFailText;
+
+
     private List<SongBean> searchResult;
     private SearchListAdapter adapter;
     int page=1;
@@ -111,9 +115,18 @@ public class SearchMusicActivity extends MvpActivity<SearchPresenter> implements
     }
 
     public void ongetSearchResult(List<SongBean> list){
+        if(tvLoadFailText.getVisibility()==View.VISIBLE){
+            tvLoadFailText.setVisibility(View.GONE);
+            lvSearchMusicList.setVisibility(View.VISIBLE);
+        }
         searchResult.clear();
         searchResult.addAll(list);
         adapter.notifyDataSetChanged();
     }
 
+    public void loadFail(){
+        tvLoadFailText.setVisibility(View.VISIBLE);
+        lvSearchMusicList.setVisibility(View.INVISIBLE);
+        ToastUtil.Toast("加载失败");
+    }
 }

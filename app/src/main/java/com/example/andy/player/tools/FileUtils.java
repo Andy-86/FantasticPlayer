@@ -59,7 +59,7 @@ public class FileUtils {
     }
 
     public static String getRelativeMusicDir() {
-        String dir = "PonyMusic/Music/";
+        String dir = "FantasticMusic/Music/";
         return mkdirs(dir);
     }
 

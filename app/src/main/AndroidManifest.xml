@@ -58,6 +58,12 @@
         <!-- 定位需要的服务 -->
         <service android:name="com.amap.api.location.APSService">
         </service>
+
+        <receiver android:name=".receiver.DownloadReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

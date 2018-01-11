@@ -30,8 +30,11 @@ public class SearchPresenter extends BasePresenter<SearchMusicActivity,SearchMod
 
             @Override
             public void onNext(SearchBean value) {
-
-               mView.ongetSearchResult(converTo(value.getSong()));
+                if(value.getSong()!=null) {
+                    mView.ongetSearchResult(converTo(value.getSong()));
+                }else{
+                    mView.loadFail();
+                }
             }
             @Override
             public void onError(Throwable e) {

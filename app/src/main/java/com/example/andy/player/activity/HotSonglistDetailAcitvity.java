@@ -18,12 +18,13 @@ import com.example.andy.player.R;
 import com.example.andy.player.adapter.HotSongListAdapter;
 import com.example.andy.player.aidl.SongBean;
 import com.example.andy.player.bean.BaseActivity;
+import com.example.andy.player.bean.DownloadInfo;
 import com.example.andy.player.bean.PlayeBean;
 import com.example.andy.player.bean.SongListInfo;
 import com.example.andy.player.http.HttpCallback;
 import com.example.andy.player.http.HttpClient;
 import com.example.andy.player.mvp.remote.RemoteMusicFragment;
-import com.example.andy.player.tools.DownloadOnlineMusic;
+import com.example.andy.player.tools.DownloadExcuter;
 import com.example.andy.player.tools.LogUtil;
 import com.example.andy.player.tools.ShareOnlineMusic;
 import com.example.andy.player.tools.SongEvent;
@@ -155,7 +156,19 @@ public class HotSonglistDetailAcitvity extends BaseActivity {
                         share(songBean);
                         break;
                     case 1:// 下载
-                        download(songBean);
+                        HttpClient.getPlayerBean((int) songBean.getSongid(), new HttpCallback<PlayeBean>() {
+                            @Override
+                            public void onSuccess(PlayeBean playeBean) {
+                                songBean.setM4a(playeBean.getBitrate().getFile_link());
+                                download(songBean);
+                            }
+
+                            @Override
+                            public void onFail(Exception e) {
+
+                            }
+                        });
+
                         break;
                 }
             }
@@ -164,7 +177,7 @@ public class HotSonglistDetailAcitvity extends BaseActivity {
     }
 
     private void download(final SongBean songBean) {
-        new DownloadOnlineMusic(this, songBean) {
+        new DownloadExcuter(this, songBean) {
             @Override
             public void onPrepare() {
                 mProgressDialog.show();
@@ -172,9 +185,9 @@ public class HotSonglistDetailAcitvity extends BaseActivity {
 
             @SuppressLint("StringFormatInvalid")
             @Override
-            public void onExecuteSuccess(Void aVoid) {
+            public void onExecuteSuccess(DownloadInfo info) {
                 mProgressDialog.cancel();
-                ToastUtils.show(getString(R.string.now_download, songBean.getSongname()));
+                ToastUtils.show(HotSonglistDetailAcitvity.this.getString(R.string.now_download, songBean.getSongname()));
             }
 
             @Override

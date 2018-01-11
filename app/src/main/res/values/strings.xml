@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Fantastic Player</string>
+    <string name="app_name">FantasticMusic</string>
     <string name="title_activity_music_acitivity">MusicAcitivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -50,4 +50,5 @@
     <string name="timer_cancel">定时停止播放已取消</string>
     <string name="login_out">LOGIN OUT</string>
     <string name="get_menu_more">MORE</string>
+    <string name="download_success">下载成功</string>
 </resources>

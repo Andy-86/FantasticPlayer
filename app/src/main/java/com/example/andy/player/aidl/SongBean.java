@@ -107,11 +107,21 @@ public class SongBean implements Parcelable {
     private String fileName;
     private String fileSize;
 
+    private String lrclink;
+
     private String songmid;
-    @SerializedName("pic_big")
+    @SerializedName("album_500_500")
     private String albumpic_big;
     @SerializedName("pic_small")
     private String albumpic_small;
+
+    public String getLrclink() {
+        return lrclink;
+    }
+
+    public void setLrclink(String lrclink) {
+        this.lrclink = lrclink;
+    }
 
     public String getAlbumName() {
         return albumName;
@@ -287,67 +297,7 @@ public class SongBean implements Parcelable {
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.m4a);
-        dest.writeString(this.media_mid);
-        dest.writeInt(this.progress);
-        dest.writeLong(this.songid);
-        dest.writeLong(this.singerid);
-        dest.writeString(this.albumname);
-        dest.writeString(this.downUrl);
-        dest.writeString(this.singername);
-        dest.writeString(this.songname);
-        dest.writeString(this.strMediaMid);
-        dest.writeString(this.albummid);
-        dest.writeString(this.albumName);
-        dest.writeLong(this.duration);
-        dest.writeString(this.path);
-        dest.writeString(this.fileName);
-        dest.writeString(this.fileSize);
-        dest.writeString(this.songmid);
-        dest.writeString(this.albumpic_big);
-        dest.writeString(this.albumpic_small);
-    }
-
-    protected SongBean(Parcel in) {
-        this.m4a = in.readString();
-        this.media_mid = in.readString();
-        this.progress = in.readInt();
-        this.songid = in.readLong();
-        this.singerid = in.readLong();
-        this.albumname = in.readString();
-        this.downUrl = in.readString();
-        this.singername = in.readString();
-        this.songname = in.readString();
-        this.strMediaMid = in.readString();
-        this.albummid = in.readString();
-        this.albumName = in.readString();
-        this.duration = in.readLong();
-        this.path = in.readString();
-        this.fileName = in.readString();
-        this.fileSize = in.readString();
-        this.songmid = in.readString();
-        this.albumpic_big = in.readString();
-        this.albumpic_small = in.readString();
-    }
-
-    public static final Parcelable.Creator<SongBean> CREATOR = new Parcelable.Creator<SongBean>() {
-        @Override
-        public SongBean createFromParcel(Parcel source) {
-            return new SongBean(source);
-        }
-
-        @Override
-        public SongBean[] newArray(int size) {
-            return new SongBean[size];
-        }
-    };
 
     @Override
     public String toString() {
@@ -378,4 +328,68 @@ public class SongBean implements Parcelable {
     public boolean equals(Object obj) {
         return ((SongBean)obj).getSongid()==getSongid();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.m4a);
+        dest.writeString(this.media_mid);
+        dest.writeInt(this.progress);
+        dest.writeLong(this.songid);
+        dest.writeLong(this.singerid);
+        dest.writeString(this.albumname);
+        dest.writeString(this.downUrl);
+        dest.writeString(this.singername);
+        dest.writeString(this.songname);
+        dest.writeString(this.strMediaMid);
+        dest.writeString(this.albummid);
+        dest.writeString(this.albumName);
+        dest.writeLong(this.duration);
+        dest.writeString(this.path);
+        dest.writeString(this.fileName);
+        dest.writeString(this.fileSize);
+        dest.writeString(this.lrclink);
+        dest.writeString(this.songmid);
+        dest.writeString(this.albumpic_big);
+        dest.writeString(this.albumpic_small);
+    }
+
+    protected SongBean(Parcel in) {
+        this.m4a = in.readString();
+        this.media_mid = in.readString();
+        this.progress = in.readInt();
+        this.songid = in.readLong();
+        this.singerid = in.readLong();
+        this.albumname = in.readString();
+        this.downUrl = in.readString();
+        this.singername = in.readString();
+        this.songname = in.readString();
+        this.strMediaMid = in.readString();
+        this.albummid = in.readString();
+        this.albumName = in.readString();
+        this.duration = in.readLong();
+        this.path = in.readString();
+        this.fileName = in.readString();
+        this.fileSize = in.readString();
+        this.lrclink = in.readString();
+        this.songmid = in.readString();
+        this.albumpic_big = in.readString();
+        this.albumpic_small = in.readString();
+    }
+
+    public static final Creator<SongBean> CREATOR = new Creator<SongBean>() {
+        @Override
+        public SongBean createFromParcel(Parcel source) {
+            return new SongBean(source);
+        }
+
+        @Override
+        public SongBean[] newArray(int size) {
+            return new SongBean[size];
+        }
+    };
 }

@@ -10,14 +10,14 @@ import android.support.v7.app.AlertDialog;
 import android.webkit.MimeTypeMap;
 
 import com.example.andy.player.R;
-
-
+import com.example.andy.player.bean.DownloadInfo;
+import com.example.andy.player.contract.AppCache;
 
 
 /**
  * Created by hzwangchenyan on 2017/1/20.
  */
-public abstract class DownloadMusic implements IExecutor<Void> {
+public abstract class DownloadMusic implements IExecutor<DownloadInfo> {
     private Activity mActivity;
 
     public DownloadMusic(Activity activity) {
@@ -67,11 +67,10 @@ public abstract class DownloadMusic implements IExecutor<Void> {
             request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
             request.setAllowedOverRoaming(false); // 不允许漫游
             DownloadManager downloadManager = (DownloadManager) mActivity.getSystemService(Context.DOWNLOAD_SERVICE);
-            downloadManager.enqueue(request);
-//            long id = downloadManager.enqueue(request);
-//            String musicAbsPath = FileUtils.getMusicDir().concat(fileName);
-//            DownloadMusicInfo downloadMusicInfo = new DownloadMusicInfo(title, musicAbsPath, coverPath);
-//            AppCache.getDownloadList().put(id, downloadMusicInfo);
+            long id = downloadManager.enqueue(request);
+            String musicAbsPath = FileUtils.getMusicDir().concat(fileName);
+            DownloadInfo downloadMusicInfo = new DownloadInfo(title, musicAbsPath, coverPath);
+            AppCache.getDownloadInfoList().put(id, downloadMusicInfo);
         } catch (Throwable th) {
             th.printStackTrace();
             ToastUtils.show("下载失败");
