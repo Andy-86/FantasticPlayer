@@ -37,8 +37,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
+                android:layout_marginRight="30dp"
                 android:orientation="vertical">
-
                 <TextView
                     android:id="@+id/tv_title"
                     android:layout_width="wrap_content"
@@ -58,6 +58,15 @@
                     android:textColor="@color/grey"
                     android:textSize="12sp" />
             </LinearLayout>
+            <ImageView
+                android:id="@+id/iv_menu_more"
+                android:layout_marginLeft="-50dp"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@drawable/btn_action_bg_selector"
+                android:scaleType="centerInside"
+               android:src="@drawable/ic_more_more"
+                />
         </LinearLayout>
 
     </android.support.v7.widget.Toolbar>

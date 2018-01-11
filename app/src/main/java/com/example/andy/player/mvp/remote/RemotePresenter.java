@@ -1,7 +1,6 @@
 package com.example.andy.player.mvp.remote;
 
-import com.example.andy.player.bean.AbstractResultUtil;
-import com.example.andy.player.bean.HotSongResult;
+import com.example.andy.player.bean.RecomendSongList;
 import com.example.andy.player.mvp.base.BasePresenter;
 import com.example.andy.player.tools.LogUtil;
 import com.example.andy.player.tools.RetrofitUtil;
@@ -20,17 +19,17 @@ public class RemotePresenter extends BasePresenter<RemoteMusicFragment,RemoteMod
     }
 
     public void getSonglit(final int tipid){
-       mModel.getSongList(new Observer<AbstractResultUtil<HotSongResult>>() {
+       mModel.getSongList(new Observer<RecomendSongList>() {
             @Override
             public void onSubscribe(Disposable d) {
                 RetrofitUtil.addDisposable(d);
             }
 
             @Override
-            public void onNext(AbstractResultUtil<HotSongResult> value) {
-                if(value.getShowapi_res_body().getPagebean()!=null) {
-                    LogUtil.doLog("onNext", "" + value.getShowapi_res_body().getPagebean().getSonglist().size());
-                    mView.returnsonglist(tipid, value.getShowapi_res_body().getPagebean().getSonglist());
+            public void onNext(RecomendSongList value) {
+                if(value.getSong_list()!=null) {
+                    LogUtil.doLog("onNext", "" + value.getSong_list().size());
+                    mView.returnsonglist(tipid, value.getSong_list());
                 }
             }
 
@@ -43,6 +42,6 @@ public class RemotePresenter extends BasePresenter<RemoteMusicFragment,RemoteMod
             public void onComplete() {
 
             }
-        },tipid);
+        },tipid,20,0);
     }
 }

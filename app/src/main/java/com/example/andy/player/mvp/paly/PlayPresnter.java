@@ -28,7 +28,7 @@ public class PlayPresnter extends BasePresenter<PlayFragment,PlayModle> {
 
             @Override
             public void onNext(SongBean value) {
-                LogUtil.doLog("onNext",value.toString());
+                LogUtil.doLog("onNext","使用本地服务器");
             }
 
             @Override

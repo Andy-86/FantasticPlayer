@@ -14,10 +14,8 @@ import com.example.andy.player.R;
 import com.example.andy.player.activity.HotSonglistDetailAcitvity;
 import com.example.andy.player.adapter.RemoteListAdapter;
 import com.example.andy.player.aidl.SongBean;
-import com.example.andy.player.bean.HotSong;
 import com.example.andy.player.bean.SongListInfo;
 import com.example.andy.player.mvp.base.MvpFragment;
-import com.example.andy.player.tools.Transformer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,17 +32,19 @@ import butterknife.Unbinder;
 public class RemoteMusicFragment extends MvpFragment<RemotePresenter> {
     public static final String HOTSONG_EXTRA="hotsongExtract";
     public static final String SONG_INFO="songInfo";
-    List<SongBean> popularMusicList;
-    List<SongBean> hotMusicList;
-    List<SongBean> newSongList;
-    List<SongBean> theMainlandMusicList;
-    List<SongBean> europeanAndAmericanMusic;
-    List<SongBean> hongKongTableMusic;
-    List<SongBean> southKoreaSMusicList;
-    List<SongBean> japanSMusic;
-    List<SongBean> netSongs;
-    List<SongBean> kSongMusicList;
-    List<SongBean> musician;
+    List<SongBean> baiduHotSongList;
+    List<SongBean> baiduNewSongList;
+    List<SongBean> chineseGoldenMelodyList;
+    List<SongBean> euramerican;
+    List<SongBean> goldenSongList;
+    List<SongBean> loveSongsToTheList;
+    List<SongBean> onlineSongList;
+    List<SongBean> listOfClassicOldSongs;
+    List<SongBean> listOfRock;
+    List<SongBean> ktvHotSongList;
+    List<SongBean> Billboard;
+    List<SongBean> hitoChineseList;
+    List<SongBean> powerSongList;
     @BindView(R.id.lv_playlist)
     RecyclerView lvPlaylist;
     @BindView(R.id.tv_loading_text)
@@ -105,17 +105,18 @@ public class RemoteMusicFragment extends MvpFragment<RemotePresenter> {
         lvPlaylist.setLayoutManager(new LinearLayoutManager(getContext()));
         listAdapter=new RemoteListAdapter(getContext(),listInfos);
         lvPlaylist.setAdapter(listAdapter);
-       mPresenter.getSonglit(4);
-       mPresenter.getSonglit(27);
-       mPresenter.getSonglit(26);
-       mPresenter.getSonglit(5);
-       mPresenter.getSonglit(3);
+       mPresenter.getSonglit(2);
+       mPresenter.getSonglit(1);
+       mPresenter.getSonglit(20);
+       mPresenter.getSonglit(21);
+       mPresenter.getSonglit(23);
+       mPresenter.getSonglit(22);
+       mPresenter.getSonglit(25);
+       mPresenter.getSonglit(11);
        mPresenter.getSonglit(6);
-       mPresenter.getSonglit(16);
-       mPresenter.getSonglit(17);
-       mPresenter.getSonglit(28);
-       mPresenter.getSonglit(36);
-       mPresenter.getSonglit(32);
+       mPresenter.getSonglit(7);
+       mPresenter.getSonglit(8);
+        mPresenter.getSonglit(18);
     }
 
     @Override
@@ -124,137 +125,171 @@ public class RemoteMusicFragment extends MvpFragment<RemotePresenter> {
         unbinder.unbind();
     }
 
-    /**
-     * 榜行榜id
-     3=欧美
-     4=流行榜
-     5=内地
-     6=港台
-     16=韩国
-     17=日本
-     26=热歌
-     27=新歌
-     28=网络歌曲
-     32=音乐人
-     36=K歌金曲
-     * @param tipid
-     * @param list
-     */
-    public void returnsonglist(int tipid, List<HotSong> list){
+//  <item>主打榜单</item>
+//        <item>百度热歌榜</item>
+//        <item>百度新歌榜</item>
+//        <item>分类榜单</item>
+//        <item>华语金曲榜</item>
+//        <item>欧美金曲榜</item>
+//        <item>影视金曲榜</item>
+//        <item>情歌对唱榜</item>
+//        <item>网络歌曲榜</item>
+//        <item>经典老歌榜</item>
+//        <item>摇滚榜</item>
+//        <item>媒体榜单</item>
+//        <item>KTV热歌榜</item>
+//        <item>Billboard</item>
+//        <item>Hito中文榜</item>
+//        <item>叱咤歌曲榜</item>
+
+//     <item>#</item>
+//        <item>2</item>
+//        <item>1</item>
+//        <item>#</item>
+//        <item>20</item>
+//        <item>21</item>
+//        <item>24</item>
+//        <item>23</item>
+//        <item>25</item>
+//        <item>22</item>
+//        <item>11</item>
+//        <item>#</item>
+//        <item>6</item>
+//        <item>8</item>
+//        <item>18</item>
+//        <item>7</item>
+    public void returnsonglist(int tipid, List<SongBean> list){
         switch (tipid){
-            case 4:
+            case 2:
                 //转换
-                popularMusicList= Transformer.transfromToSongBean(list);
-                insertIntoListInfo(4,popularMusicList);
+                baiduHotSongList=list;
+                insertIntoListInfo(tipid,list);
                 break;
-            case 27:
+            case 1:
                 //转换
-                hotMusicList= Transformer.transfromToSongBean(list);
-                insertIntoListInfo(27,hotMusicList);
+               baiduNewSongList=list;
+                insertIntoListInfo(tipid,list);
                 break;
-            case 26:
+            case 20:
                 //转换
-                newSongList= Transformer.transfromToSongBean(list);
-                insertIntoListInfo(26,newSongList);
+              chineseGoldenMelodyList=list;
+                insertIntoListInfo(tipid,list);
                 break;
-            case 5:
+            case 21:
                 //转换
-                theMainlandMusicList= Transformer.transfromToSongBean(list);
-                insertIntoListInfo(5,theMainlandMusicList);
+               euramerican=list;
+                insertIntoListInfo(tipid,list);
                 break;
-            case 3:
+            case 24:
                 //转换
-                europeanAndAmericanMusic= Transformer.transfromToSongBean(list);
-                insertIntoListInfo(3,europeanAndAmericanMusic);
+               goldenSongList=list;
+                insertIntoListInfo(tipid,list);
+                break;
+            case 23:
+                //转换
+               loveSongsToTheList=list;
+                insertIntoListInfo(tipid,list);
+                break;
+            case 25:
+                //转换
+                onlineSongList=list;
+                insertIntoListInfo(tipid,list);
+                break;
+            case 22:
+                //转换
+               listOfClassicOldSongs=list;
+                insertIntoListInfo(tipid,list);
+                break;
+            case 11:
+                //转换
+               listOfRock=list;
+                insertIntoListInfo(tipid,list);
                 break;
             case 6:
                 //转换
-                hongKongTableMusic= Transformer.transfromToSongBean(list);
-                insertIntoListInfo(6,hongKongTableMusic);
+               ktvHotSongList=list;
+                insertIntoListInfo(tipid,list);
                 break;
-            case 16:
+            case 8:
                 //转换
-                southKoreaSMusicList= Transformer.transfromToSongBean(list);
-                insertIntoListInfo(16,southKoreaSMusicList);
+                Billboard=list;
+                insertIntoListInfo(tipid,list);
                 break;
-            case 17:
+            case 18:
                 //转换
-                japanSMusic= Transformer.transfromToSongBean(list);
-                insertIntoListInfo(17,japanSMusic);
+                hitoChineseList=list;
+                insertIntoListInfo(tipid,list);
                 break;
-            case 28:
+            case 7:
                 //转换
-                netSongs= Transformer.transfromToSongBean(list);
-                insertIntoListInfo(28,netSongs);
-                break;
-            case 36:
-                //转换
-                kSongMusicList= Transformer.transfromToSongBean(list);
-                insertIntoListInfo(36,kSongMusicList);
-                break;
-            case 32:
-                //转换
-                musician= Transformer.transfromToSongBean(list);
-                insertIntoListInfo(32,musician);
+                powerSongList=list;
+                insertIntoListInfo(tipid,list);
                 break;
 
         }
         loadcoutn++;
-        if(loadcoutn==11)
+        if(loadcoutn==13)
             finishload();
-
     }
 
     public List<SongBean> getHotSongList(int tipid) {
-        switch (tipid) {
-            case 4:
+        switch (tipid){
+            case 2:
                 //转换
-                return popularMusicList;
+                return baiduHotSongList;
 
+            case 1:
+                //转换
+                return baiduNewSongList;
 
-            case 27:
+            case 20:
                 //转换
-                return hotMusicList;
-            case 26:
-                //转换
-                return newSongList;
+                return chineseGoldenMelodyList;
 
-            case 5:
+            case 21:
                 //转换
-                return theMainlandMusicList;
+                return euramerican;
 
-            case 3:
+            case 24:
                 //转换
-                return europeanAndAmericanMusic;
+                return goldenSongList;
+
+            case 23:
+                //转换
+                return loveSongsToTheList;
+
+            case 25:
+                //转换
+                return onlineSongList;
+
+            case 22:
+                //转换
+                return listOfClassicOldSongs;
+
+            case 11:
+                //转换
+                return listOfRock;
 
             case 6:
                 //转换
-                return hongKongTableMusic;
+                return ktvHotSongList;
 
-            case 16:
+            case 8:
                 //转换
-                return southKoreaSMusicList;
+                return Billboard;
 
-            case 17:
+            case 18:
                 //转换
-                return japanSMusic;
+                return hitoChineseList;
 
-            case 28:
+            case 7:
                 //转换
-                return netSongs;
+                return powerSongList;
 
-            case 36:
-                //转换
-                return kSongMusicList;
 
-            case 32:
-                //转换
-                return musician;
-
-            default:
-                return null;
 
         }
+        return null;
     }
     public void finishload(){
 

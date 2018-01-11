@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.example.andy.player.R;
 import com.example.andy.player.aidl.SongBean;
+import com.example.andy.player.bean.PlayeBean;
+import com.example.andy.player.http.HttpCallback;
+import com.example.andy.player.http.HttpClient;
 import com.example.andy.player.tools.SongEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -47,7 +50,21 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.My
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new SongEvent(data.get(position)));
+                HttpClient.getPlayerBean((int) data.get(position).getSongid(), new HttpCallback<PlayeBean>() {
+                    @Override
+                    public void onSuccess(PlayeBean playeBean) {
+                        data.get(position).setM4a(playeBean.getBitrate().getFile_link());
+                        data.get(position).setAlbumpic_big(playeBean.getSonginfo().getPic_big());
+                        data.get(position).setAlbumpic_small(playeBean.getSonginfo().getPic_big());
+                        EventBus.getDefault().post(new SongEvent(data.get(position)));
+                    }
+
+                    @Override
+                    public void onFail(Exception e) {
+
+                    }
+                });
+
             }
         });
         holder.ivCover.setVisibility(View.GONE);

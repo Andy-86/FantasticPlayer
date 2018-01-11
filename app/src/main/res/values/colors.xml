@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#F44336</color>
+    <color name="primary">#E43F3F</color>
     <color name="white">@android:color/white</color>
     <color name="white_8p">#14FFFFFF</color>
     <color name="white_16p">#29FFFFFF</color>
@@ -19,4 +20,8 @@
     <color name="grey_300_96p">#F5E0E0E0</color>
     <color name="grey_900">#212121</color>
     <color name="grey_900_96p">#F5212121</color>
+    <color name="iron">#CCCCCC</color>
+    <color name="primary_dark">#E12929</color>
+    <color name="primary_darker">#CC1D1D</color>
+    <color name="accent">#FFFFFF</color>
 </resources>

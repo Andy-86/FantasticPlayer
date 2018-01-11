@@ -1,8 +1,6 @@
 package com.example.andy.player.mvp.remote;
 
-import com.example.andy.player.bean.AbstractResultUtil;
-import com.example.andy.player.bean.HotSongResult;
-import com.example.andy.player.contract.Contract;
+import com.example.andy.player.bean.RecomendSongList;
 import com.example.andy.player.mvp.base.BaseModel;
 import com.example.andy.player.mvp.remote.api.RemoteApi;
 import com.example.andy.player.tools.RetrofitUtil;
@@ -21,10 +19,10 @@ public class RemoteModle extends BaseModel<RemotePresenter>{
         super(presenter);
     }
 
-    public void getSongList(Observer<AbstractResultUtil<HotSongResult>> observer,int tipid){
+    public void getSongList(Observer<RecomendSongList> observer, int type,int size,int offset){
         Retrofit retrofit= RetrofitUtil.getMusicRetrofit();
         RemoteApi api=retrofit.create(RemoteApi.class);
-        api.getHotList(Contract.appid,Contract.sign,System.currentTimeMillis(),tipid)
+        api.getHotList("Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:0.9.4)","json","","webapp_music","baidu.ting.billboard.billList",type,size,offset)
         .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

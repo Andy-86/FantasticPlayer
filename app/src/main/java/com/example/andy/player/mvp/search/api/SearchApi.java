@@ -1,23 +1,23 @@
 package com.example.andy.player.mvp.search.api;
 
-import com.example.andy.player.bean.AbstractResultUtil;
-import com.example.andy.player.bean.SearchResult;
+import com.example.andy.player.bean.SearchBean;
 
 import io.reactivex.Observable;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.POST;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Query;
 
 /**
  * Created by andy on 2017/12/25.
  */
 
 public interface SearchApi {
-    @POST("213-1/")
-    @FormUrlEncoded
-    Observable<AbstractResultUtil<SearchResult>> searchResult(@Field("showapi_appid") int appid,
-                                                            @Field("showapi_sign")String sign,
-                                                            @Field("showapi_timestamp")long timestamp,
-                                                            @Field("keyword") String keyword,
-                                                            @Field("page") int page);
+
+    @GET("ting")
+    Observable<SearchBean> searchResult(@Header("User-Agent")String cookie,
+                                        @Query("format") String  format,
+                                        @Query("calback") String  calback,
+                                        @Query("from") String  from,
+                                        @Query("method") String  method,
+                                        @Query("query") String  query);
 }

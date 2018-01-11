@@ -14,6 +14,7 @@ import com.example.andy.player.aidl.IMusicPlayer;
 import com.example.andy.player.service.MusicService;
 import com.example.andy.player.tools.CoverLoader;
 import com.example.andy.player.tools.LogUtil;
+import com.example.andy.player.tools.Preferences;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -51,6 +52,7 @@ public class MyApplication extends Application {
         activities = new LinkedList<>();
         mainTid = android.os.Process.myTid();
         CoverLoader.getInstance().init(this);
+        Preferences.init(this);
     }
 
     /**

@@ -42,12 +42,24 @@ public class RetrofitUtil {
             Log.d("RetrofitUtil", "message:" + message);
         }
     });
+    private static HttpLoggingInterceptor musicInterceptor = new HttpLoggingInterceptor(
+            new HttpLoggingInterceptor.Logger() {
+                @Override
+                public void log(String message) {
+                    Log.d("RetrofitUtil", "message:" + message);
+                }
+            });
 
     private static long fileSize = 10 * 1024 * 1024; //10MB
 
     private static OkHttpClient mOkHttpClient = new OkHttpClient.Builder()
             .connectTimeout(8, TimeUnit.SECONDS)
-            .addInterceptor(new OkHttpLoggingInterceptor())
+            .addInterceptor(mHttpLoggingInterceptor)
+            .cache(new Cache(cacheFile, fileSize))
+            .build();
+    private static OkHttpClient musicClinet = new OkHttpClient.Builder()
+            .connectTimeout(8, TimeUnit.SECONDS)
+            .addInterceptor(musicInterceptor)
             .cache(new Cache(cacheFile, fileSize))
             .build();
 
@@ -71,21 +83,21 @@ public class RetrofitUtil {
 
 
     public static retrofit2.Retrofit getMusicRetrofit() {
-        if (mRetrofit == null) {
+        if (musicRetrofit == null) {
             synchronized (RetrofitUtil.class) {
-                if (mRetrofit == null) {
-                    mHttpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-                    mRetrofit = new Retrofit.Builder()
+                if (musicRetrofit == null) {
+                    musicInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+                    musicRetrofit = new Retrofit.Builder()
                             .addConverterFactory(GsonConverterFactory.create())
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                            .client(mOkHttpClient)
+                            .client(musicClinet)
                             .baseUrl(Contract.BASE_MUSIC_URL)
                             .build();
 
                 }
             }
         }
-        return mRetrofit;
+        return musicRetrofit;
     }
 
 

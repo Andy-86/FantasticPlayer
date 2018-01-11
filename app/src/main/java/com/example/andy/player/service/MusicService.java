@@ -35,6 +35,7 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
     public static final int MUSIC_ACTION_SEEK_PLAY = 0xff007;
     public static final int MUSIC_ACTION_COMPLETE = 0xff008;
     public static final  int MUSIC_ACTION_ERROR=0xff009;
+    public static final int MUSIC_ACTION_QUIT=0xff00a;
     public static final String SONGBEAN="Songbean";
     private RemoteCallbackList<MusicPlayListner> remoteCallbackList = new RemoteCallbackList<>();
     private Timer timer;
@@ -98,6 +99,9 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
                 case MUSIC_ACTION_SEEK_PLAY:
                     int progerss=songBean.getProgress();
                     seekPlaySong(progerss);
+                    break;
+                case MUSIC_ACTION_QUIT:
+                    System.exit(0);
                     break;
 
 

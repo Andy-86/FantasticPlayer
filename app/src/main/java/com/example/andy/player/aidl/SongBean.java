@@ -3,6 +3,8 @@ package com.example.andy.player.aidl;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by andy on 2017/9/21.
  */
@@ -26,14 +28,76 @@ public class SongBean implements Parcelable {
      * albumid : 40035
      */
 
+
+//      "artist_id": "88",
+//              "language": "国语",
+//              "pic_big": "http://qukufile2.qianqian.com/data2/pic/1c2424e15b4f432d5ad65f69f0e2d11d/568328873/568328873.png@s_1,w_150,h_150",
+//              "pic_small": "http://qukufile2.qianqian.com/data2/pic/1c2424e15b4f432d5ad65f69f0e2d11d/568328873/568328873.png@s_1,w_90,h_90",
+//              "country": "内地",
+//              "area": "0",
+//              "publishtime": "2017-12-22",
+//              "album_no": "1",
+//              "lrclink": "http://qukufile2.qianqian.com/data2/lrc/9b90b83c17e694eaedb354fd8d19fcff/568325003/568325003.lrc",
+//              "copy_type": "1",
+//              "hot": "187659",
+//              "all_artist_ting_uid": "2517",
+//              "resource_type": "0",
+//              "is_new": "1",
+//              "rank_change": "0",
+//              "rank": "1",
+//              "all_artist_id": "88",
+//              "style": "",
+//              "del_status": "0",
+//              "relate_status": "0",
+//              "toneid": "0",
+//              "all_rate": "64,128,256,320,flac",
+//              "file_duration": 235,
+//              "has_mv_mobile": 0,
+//              "versions": "",
+//              "bitrate_fee": "{\"0\":\"0|0\",\"1\":\"0|0\"}",
+//              "biaoshi": "first,lossless",
+//              "info": "",
+//              "has_filmtv": "0",
+//              "si_proxycompany": "TAIHE MUSIC GROUP",
+//              "res_encryption_flag": "0",
+//              "song_id": "568320992",
+//              "title": "狐狸（电影《二代妖精之今生有幸》推广曲）",
+//              "ting_uid": "2517",
+//              "author": "薛之谦",
+//              "album_id": "568320989",
+//              "album_title": "狐狸（电影《二代妖精之今生有幸》推广曲）",
+//              "is_first_publish": 0,
+//              "havehigh": 2,
+//              "charge": 0,
+//              "has_mv": 1,
+//              "learn": 0,
+//              "song_source": "web",
+//              "piao_id": "0",
+//              "korean_bb_song": "0",
+//              "resource_type_ext": "0",
+//              "mv_provider": "0000000000",
+//              "artist_name": "薛之谦",
+//              "pic_radio": "http://qukufile2.qianqian.com/data2/pic/1c2424e15b4f432d5ad65f69f0e2d11d/568328873/568328873.png@s_1,w_300,h_300",
+//              "pic_s500": "http://qukufile2.qianqian.com/data2/pic/1c2424e15b4f432d5ad65f69f0e2d11d/568328873/568328873.png@s_1,w_500,h_500",
+//              "pic_premium": "http://qukufile2.qianqian.com/data2/pic/1c2424e15b4f432d5ad65f69f0e2d11d/568328873/568328873.png@s_1,w_500,h_500",
+//              "pic_huge": "http://qukufile2.qianqian.com/data2/pic/1c2424e15b4f432d5ad65f69f0e2d11d/568328873/568328873.png@s_1,w_1000,h_1000",
+//              "album_500_500": "http://qukufile2.qianqian.com/data2/pic/1c2424e15b4f432d5ad65f69f0e2d11d/568328873/568328873.png@s_1,w_500,h_500",
+//              "album_800_800": "",
+//              "album_1000_1000": "http://qukufile2.qianqian.com/data2/pic/1c2424e15b4f432d5ad65f69f0e2d11d/568328873/568328873.png@s_1,w_1000,h_1000"
+//
     private String m4a;
     private String media_mid;
     private int progress;
+    @SerializedName("song_id")
     private long songid;
+    @SerializedName("artist_id")
     private long singerid;
+    @SerializedName("album_title")
     private String albumname;
     private String downUrl;
+    @SerializedName("artist_name")
     private String singername;
+    @SerializedName("title")
     private String songname;
     private String strMediaMid;
     private String albummid;
@@ -42,6 +106,12 @@ public class SongBean implements Parcelable {
     private String path;
     private String fileName;
     private String fileSize;
+
+    private String songmid;
+    @SerializedName("pic_big")
+    private String albumpic_big;
+    @SerializedName("pic_small")
+    private String albumpic_small;
 
     public String getAlbumName() {
         return albumName;
@@ -100,9 +170,7 @@ public class SongBean implements Parcelable {
         this.singerid = singerid;
     }
 
-    private String songmid;
-    private String albumpic_big;
-    private String albumpic_small;
+
 
 
     public String getM4a() {

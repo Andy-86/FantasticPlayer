@@ -68,10 +68,10 @@ public class OkHttpLoggingInterceptor implements Interceptor {
             try {
                 userAgent = WebSettings.getDefaultUserAgent(MyApplication.getContext());
             } catch (Exception e) {
-                userAgent = System.getProperty("http.agent");
+                userAgent = System.getProperty("com.example.andy.player.http.agent");
             }
         } else {
-            userAgent = System.getProperty("http.agent");
+            userAgent = System.getProperty("com.example.andy.player.http.agent");
         }
         StringBuffer sb = new StringBuffer();
         for (int i = 0, length = userAgent.length(); i < length; i++) {

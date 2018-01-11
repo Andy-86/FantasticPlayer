@@ -37,6 +37,7 @@ import com.example.andy.player.mvp.search.SearchMusicActivity;
 import com.example.andy.player.service.MusicService;
 import com.example.andy.player.tools.CoverLoader;
 import com.example.andy.player.tools.LogUtil;
+import com.example.andy.player.tools.NaviMenuExecutor;
 import com.example.andy.player.tools.PermissionUtils;
 import com.example.andy.player.tools.RetrofitUtil;
 import com.example.andy.player.tools.SongEvent;
@@ -96,9 +97,9 @@ public class MusicAcitivity extends BaseActivity
 
     private MusicPlayListner listner = new MusicPlayListner.Stub() {
         @Override
-        public void action(int actioncode, Message message,SongBean songBean) throws RemoteException {
+        public void action(int actioncode, Message message, SongBean songBean) throws RemoteException {
             mHandler.sendMessage(message);
-            needToPlay=songBean;
+            needToPlay = songBean;
         }
     };
 
@@ -186,6 +187,7 @@ public class MusicAcitivity extends BaseActivity
         viewpager.setDrawingCacheEnabled(true);
         tvLocalMusic.setSelected(true);
         PermissionUtils.RequestReadAndWriteExt(this, comfirmListener);
+        navView.setNavigationItemSelectedListener(this);
     }
 
 
@@ -215,7 +217,7 @@ public class MusicAcitivity extends BaseActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         drawerLayout.closeDrawers();
-        return true;
+        return NaviMenuExecutor.onNavigationItemSelected(item, this);
     }
 
     @OnClick({R.id.iv_menu, R.id.tv_local_music, R.id.tv_online_music, R.id.fl_play_bar, R.id.iv_search, R.id.iv_play_bar_play, R.id.iv_play_bar_next})
@@ -231,8 +233,8 @@ public class MusicAcitivity extends BaseActivity
                 viewpager.setCurrentItem(1);
                 break;
             case R.id.fl_play_bar:
-                if(mPlayFragment!=null)
-                showPlayingFragment();
+                if (mPlayFragment != null)
+                    showPlayingFragment();
                 break;
             case R.id.iv_search:
                 startActivity(new Intent(MusicAcitivity.this, SearchMusicActivity.class));
@@ -332,7 +334,7 @@ public class MusicAcitivity extends BaseActivity
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnEvenMain(SongEvent songEvent) {
 
-        Log.d(TAG, "OnEvenMain: "+songEvent.getSongBean());
+        Log.d(TAG, "OnEvenMain: " + songEvent.getSongBean());
         if (songEvent.getSongBean().getM4a() == null) {
             if (mPlayFragment == null) {
                 showPlayingFragmentWithSongEvent(songEvent, ((LocalMusicFragment) fragmentAdapter.getItem(0)).getList());
@@ -382,12 +384,16 @@ public class MusicAcitivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        if(isPlayFragmentShow){
+        if (mPlayFragment.isCommentFragmentShow) {
+            hideCommentFragment();
+            mPlayFragment.isCommentFragmentShow=false;
+        } else if (isPlayFragmentShow) {
             hidePlayingFragment();
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
+
     private void updateWeather() {
 
         PermissionUtils.ComfirmListener locationListener = new PermissionUtils.ComfirmListener() {
@@ -412,4 +418,12 @@ public class MusicAcitivity extends BaseActivity
         };
         PermissionUtils.RequsetLocationServer(this, locationListener);
     }
+
+    public void hideCommentFragment() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(0, R.anim.fragment_slide_down);
+        ft.hide(mPlayFragment.commentFragment);
+        ft.commitAllowingStateLoss();
+    }
+
 }

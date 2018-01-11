@@ -24,6 +24,10 @@
             android:id="@+id/action_about"
             android:icon="@drawable/ic_menu_about"
             android:title="@string/menu_about" />
+        <item
+            android:id="@+id/action_login"
+            android:icon="@drawable/ic_menu_login"
+            android:title="@string/menu_login" />
     </group>
 
 </menu>

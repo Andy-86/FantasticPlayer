@@ -1,8 +1,6 @@
 package com.example.andy.player.mvp.search;
 
-import com.example.andy.player.bean.AbstractResultUtil;
-import com.example.andy.player.bean.SearchResult;
-import com.example.andy.player.contract.Contract;
+import com.example.andy.player.bean.SearchBean;
 import com.example.andy.player.mvp.base.BaseModel;
 import com.example.andy.player.mvp.search.api.SearchApi;
 import com.example.andy.player.tools.RetrofitUtil;
@@ -21,10 +19,10 @@ public class SearchModle extends BaseModel<SearchPresenter>{
         super(presenter);
     }
 
-    public void searchReuslt(Observer<AbstractResultUtil<SearchResult>> observer, String keyword,int page){
+    public void searchReuslt(Observer<SearchBean> observer, String keyword, int page){
         Retrofit retrofit= RetrofitUtil.getMusicRetrofit();
         SearchApi api=retrofit.create(SearchApi.class);
-        api.searchResult(Contract.appid,Contract.sign,System.currentTimeMillis(),keyword,page)
+        api.searchResult("Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:0.9.4)","json","","webapp_music","baidu.ting.search.catalogSug",keyword)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

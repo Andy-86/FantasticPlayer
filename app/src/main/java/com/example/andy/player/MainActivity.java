@@ -76,9 +76,9 @@ public class MainActivity extends MvpActivity<PlayPresnter> implements IplayStat
     LrcView lrcView;
     private Bitmap[] bitmaps = new Bitmap[3];
     private int index = 0;
-    private String[] m4as = {"http://ws.stream.qqmusic.qq.com/200790315.m4a?fromtag=46",
-            "http://ws.stream.qqmusic.qq.com/7416139.m4a?fromtag=46",
-            "http://ws.stream.qqmusic.qq.com/7168586.m4a?fromtag=46"};
+    private String[] m4as = {"com.example.andy.player.http://ws.stream.qqmusic.qq.com/200790315.m4a?fromtag=46",
+            "com.example.andy.player.http://ws.stream.qqmusic.qq.com/7416139.m4a?fromtag=46",
+            "com.example.andy.player.http://ws.stream.qqmusic.qq.com/7168586.m4a?fromtag=46"};
     private Unbinder unbinder;
     private IMusicPlayer mMusicService;
     private SimpleDateFormat mFormatter = new SimpleDateFormat("mm:ss");

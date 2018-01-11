@@ -25,7 +25,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity" />
-
+        <activity android:name=".activity.AboutActivity"></activity>
+        <activity android:name=".activity.SettingActivity"></activity>
         <service
             android:name=".service.MusicService"
             android:enabled="true"
@@ -39,10 +40,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".mvp.registeandlogin.LoginActivity" android:theme="@style/AppTheme.Dark"></activity>
+
+        <activity android:name=".mvp.registeandlogin.SignupActivity" android:theme="@style/AppTheme.Dark"></activity>
         <activity
             android:name=".activity.MusicAcitivity"
             android:label="@string/title_activity_music_acitivity"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme" />
         <activity android:name=".activity.HotSonglistDetailAcitvity" />
         <activity android:name=".mvp.search.SearchMusicActivity"></activity>

@@ -1,5 +1,7 @@
 package com.example.andy.player.activity;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
@@ -16,11 +18,16 @@ import com.example.andy.player.R;
 import com.example.andy.player.adapter.HotSongListAdapter;
 import com.example.andy.player.aidl.SongBean;
 import com.example.andy.player.bean.BaseActivity;
+import com.example.andy.player.bean.PlayeBean;
 import com.example.andy.player.bean.SongListInfo;
+import com.example.andy.player.http.HttpCallback;
+import com.example.andy.player.http.HttpClient;
 import com.example.andy.player.mvp.remote.RemoteMusicFragment;
+import com.example.andy.player.tools.DownloadOnlineMusic;
 import com.example.andy.player.tools.LogUtil;
 import com.example.andy.player.tools.ShareOnlineMusic;
 import com.example.andy.player.tools.SongEvent;
+import com.example.andy.player.tools.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -44,6 +51,7 @@ public class HotSonglistDetailAcitvity extends BaseActivity {
 
     HotSongListAdapter hotSongListAdapter;
     HotSongListAdapter.OnRItemClickListner listner;
+    private ProgressDialog mProgressDialog;
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_hot_songlist_detail_acitvity;
@@ -66,6 +74,8 @@ public class HotSonglistDetailAcitvity extends BaseActivity {
             decorView.setSystemUiVisibility(option);
         }
 
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setMessage(getString(R.string.loading));
 
         ButterKnife.bind(this);
         songBeanList = (ArrayList<SongBean>) getIntent().getSerializableExtra(RemoteMusicFragment.HOTSONG_EXTRA);
@@ -101,10 +111,22 @@ public class HotSonglistDetailAcitvity extends BaseActivity {
         super.initEvents();
         listner=new HotSongListAdapter.OnRItemClickListner() {
             @Override
-            public void onClick(SongBean songBean) {
+            public void onClick(final SongBean songBean) {
                 LogUtil.doLog("onClick","doClick");
-                EventBus.getDefault().post(new SongEvent(songBean));
-                fin();
+                HttpClient.getPlayerBean((int) songBean.getSongid(), new HttpCallback<PlayeBean>() {
+                    @Override
+                    public void onSuccess(PlayeBean playeBean) {
+                        songBean.setM4a(playeBean.getBitrate().getFile_link());
+                        EventBus.getDefault().post(new SongEvent(songBean));
+                        fin();
+                    }
+
+                    @Override
+                    public void onFail(Exception e) {
+
+                    }
+                });
+
             }
 
             @Override
@@ -141,8 +163,26 @@ public class HotSonglistDetailAcitvity extends BaseActivity {
         dialog.show();
     }
 
-    private void download(SongBean songBean) {
+    private void download(final SongBean songBean) {
+        new DownloadOnlineMusic(this, songBean) {
+            @Override
+            public void onPrepare() {
+                mProgressDialog.show();
+            }
 
+            @SuppressLint("StringFormatInvalid")
+            @Override
+            public void onExecuteSuccess(Void aVoid) {
+                mProgressDialog.cancel();
+                ToastUtils.show(getString(R.string.now_download, songBean.getSongname()));
+            }
+
+            @Override
+            public void onExecuteFail(Exception e) {
+                mProgressDialog.cancel();
+                ToastUtils.show(R.string.unable_to_download);
+            }
+        }.execute();
     }
 
     private void share(SongBean songBean) {

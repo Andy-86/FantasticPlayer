@@ -1,6 +1,7 @@
 package com.example.andy.player.mvp.paly;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -10,7 +11,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +31,12 @@ import com.example.andy.player.aidl.IMusicPlayer;
 import com.example.andy.player.aidl.MusicPlayListner;
 import com.example.andy.player.aidl.SongBean;
 import com.example.andy.player.application.MyApplication;
+import com.example.andy.player.bean.Lrc;
+import com.example.andy.player.http.HttpCallback;
+import com.example.andy.player.http.HttpClient;
 import com.example.andy.player.interfaces.IplayStatus;
 import com.example.andy.player.mvp.base.MvpFragment;
+import com.example.andy.player.mvp.comment.CommentFragment;
 import com.example.andy.player.service.MusicService;
 import com.example.andy.player.tools.CoverLoader;
 import com.example.andy.player.tools.DiskDimenUtils;
@@ -99,7 +106,8 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
     Dislayout playDisLayout;
     @BindView(R.id.llPlayOption)
     LinearLayout llPlayOption;
-
+    public CommentFragment commentFragment;
+    public boolean isCommentFragmentShow=false;
 
     private SongEvent songEvent;
     private List<SongBean> songList;
@@ -107,9 +115,9 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
     private View contain;
     private Bitmap[] bitmaps = new Bitmap[3];
     private int index = 0;
-    private String[] m4as = {"http://ws.stream.qqmusic.qq.com/200790315.m4a?fromtag=46",
-            "http://ws.stream.qqmusic.qq.com/7416139.m4a?fromtag=46",
-            "http://ws.stream.qqmusic.qq.com/7168586.m4a?fromtag=46"};
+    private String[] m4as = {"com.example.andy.player.http://ws.stream.qqmusic.qq.com/200790315.m4a?fromtag=46",
+            "com.example.andy.player.http://ws.stream.qqmusic.qq.com/7416139.m4a?fromtag=46",
+            "com.example.andy.player.http://ws.stream.qqmusic.qq.com/7168586.m4a?fromtag=46"};
     private Unbinder unbinder;
     private IMusicPlayer mMusicService=MyApplication.myApplication.getMusicPlayerService();
     private SimpleDateFormat mFormatter = new SimpleDateFormat("mm:ss");
@@ -147,6 +155,9 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
         }
     };
 
+    public PlayFragment(){
+        this(null);
+    }
     public PlayFragment(SongEvent songEvent){
         super();
         this.songEvent=songEvent;
@@ -277,7 +288,7 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
     }
 
 
-    @OnClick({R.id.ivLast, R.id.ivPlayOrPause, R.id.ivNext,R.id.iv_back,R.id.llPlayOption})
+    @OnClick({R.id.ivLast, R.id.ivPlayOrPause, R.id.ivNext,R.id.iv_back,R.id.llPlayOption, R.id.iv_menu_more})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivLast:
@@ -300,8 +311,6 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
                 if (index <songList.size()-1) {
                     index++;
                     LogUtil.doLog("onViewClicked", "IVNEXT" + index);
-//                    setFreground.setForeground(DiskDimenUtils.getForegroundDrawable(bitmaps[index], getActivity()));
-//                    setFreground.beginAnimation();
                     dislayout.toNext();
                     musicSeekBar.setProgress(0);
                     pause();
@@ -312,6 +321,32 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
                 ((MusicAcitivity)getActivity()).hidePlayingFragment();
                 break;
             case R.id.llPlayOption:
+                break;
+            case R.id.iv_menu_more:
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.get_menu_more)
+                        .setItems(getActivity().getResources().getStringArray(R.array.playe_menu_more), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case 0:
+                                        CommentFragment.songBean=songList.get(index);
+                                        isCommentFragmentShow=true;
+                                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                                        ft.setCustomAnimations(R.anim.fragment_slide_up, 0);
+                                        if (commentFragment == null) {
+                                            commentFragment = new CommentFragment();
+                                            ft.replace(R.id.set_freground, commentFragment);
+                                        } else {
+                                            ft.show(commentFragment);
+                                            commentFragment.changeDate();
+                                        }
+                                        ft.commitAllowingStateLoss();
+                                        break;
+                                }
+                            }
+                        })
+                        .show();
                 break;
         }
     }
@@ -391,6 +426,7 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
 
     }
 
+
     /**
      * 假如进度是0就直接开始
      */
@@ -408,7 +444,17 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
         setFreground.beginAnimation();
         }else {
 
-            mPresenter.toGetTheLyrics((int) songBean.getSongid());
+            HttpClient.getLrc((int) songBean.getSongid(), new HttpCallback<Lrc>() {
+                @Override
+                public void onSuccess(Lrc lrc) {
+                    onloadLyr(lrc.getLrcContent());
+                }
+
+                @Override
+                public void onFail(Exception e) {
+
+                }
+            });
 
             new AsyncTask<Void,Integer,Bitmap>(){
                 @Override
@@ -566,5 +612,6 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
         lrcView.loadLrc(Transformer.transformToLyr(lyric));
         lrcView.updateTime(0);
     }
+
 
 }
