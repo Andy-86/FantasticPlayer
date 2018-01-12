@@ -145,7 +145,7 @@ public class MusicAcitivity extends BaseActivity
             switch (prmission) {
                 case Manifest.permission.WRITE_EXTERNAL_STORAGE:
 
-                    ((LocalMusicFragment) fragmentAdapter.getItem(0)).updateMusicList();
+                    ((LocalMusicFragment) fragmentAdapter.getItem(0)).updateMusicList(null);
 
             }
         }

@@ -51,4 +51,8 @@
     <string name="login_out">LOGIN OUT</string>
     <string name="get_menu_more">MORE</string>
     <string name="download_success">下载成功</string>
+    <string name="setting_ringtone_success">设置铃声成功</string>
+    <string name="delete_music">删除音乐</string>
+    <string name="delete">删除</string>
+    <string name="no_permission_setting">没有权限</string>
 </resources>

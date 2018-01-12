@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.andy.player.R;
 import com.example.andy.player.aidl.SongBean;
+import com.example.andy.player.interfaces.ClickMoreListner;
 import com.example.andy.player.tools.CoverLoader;
 import com.example.andy.player.tools.SongEvent;
 
@@ -28,6 +29,11 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.My
     private LayoutInflater layoutInflater;
     private Context context;
     List<SongBean> data;
+    private ClickMoreListner<SongBean> clickMoreListner;
+
+    public void setClickMoreListner(ClickMoreListner<SongBean> clickMoreListner) {
+        this.clickMoreListner = clickMoreListner;
+    }
 
     public LocalMusicAdapter(Context context, List<SongBean> list) {
         this.context = context;
@@ -52,6 +58,14 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.My
             @Override
             public void onClick(View v) {
                 EventBus.getDefault().post(new SongEvent(data.get(position)));
+            }
+        });
+        holder.ivMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(clickMoreListner!=null){
+                    clickMoreListner.ClickMore(data.get(position));
+                }
             }
         });
     }

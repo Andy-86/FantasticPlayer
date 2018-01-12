@@ -253,7 +253,6 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
 
-
         }
     }
 

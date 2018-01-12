@@ -11,11 +11,14 @@ import android.text.TextUtils;
 
 import com.example.andy.player.R;
 import com.example.andy.player.bean.DownloadInfo;
+import com.example.andy.player.bean.UpdataEvetn;
 import com.example.andy.player.contract.AppCache;
 import com.example.andy.player.tools.LogUtil;
 import com.example.andy.player.tools.ToastUtils;
 import com.example.andy.player.tools.id3.ID3TagUtils;
 import com.example.andy.player.tools.id3.ID3Tags;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 
@@ -57,6 +60,8 @@ public class DownloadReceiver extends BroadcastReceiver {
                     scanMusic();
                 }
             }, 1000);
+
+            EventBus.getDefault().post(new UpdataEvetn());
         }
     }
 

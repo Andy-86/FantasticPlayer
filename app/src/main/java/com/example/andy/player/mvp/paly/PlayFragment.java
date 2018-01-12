@@ -110,14 +110,11 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
     public boolean isCommentFragmentShow=false;
 
     private SongEvent songEvent;
-    private List<SongBean> songList;
+    private static List<SongBean> songList;
     private Dislayout.MusicStatus musicStatus = Dislayout.MusicStatus.PAUSE;//设置初始化状态为暂停
     private View contain;
     private Bitmap[] bitmaps = new Bitmap[3];
-    private int index = 0;
-    private String[] m4as = {"com.example.andy.player.http://ws.stream.qqmusic.qq.com/200790315.m4a?fromtag=46",
-            "com.example.andy.player.http://ws.stream.qqmusic.qq.com/7416139.m4a?fromtag=46",
-            "com.example.andy.player.http://ws.stream.qqmusic.qq.com/7168586.m4a?fromtag=46"};
+    private static int index = 0;
     private Unbinder unbinder;
     private IMusicPlayer mMusicService=MyApplication.myApplication.getMusicPlayerService();
     private SimpleDateFormat mFormatter = new SimpleDateFormat("mm:ss");
@@ -127,6 +124,13 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
             mHandler.sendMessage(message);
         }
     };
+
+    public static SongBean getNowPlaying(){
+        if(songList!=null)
+        return songList.get(index);
+        else
+            return null;
+    }
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
