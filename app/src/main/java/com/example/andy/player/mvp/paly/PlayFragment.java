@@ -15,11 +15,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -32,6 +35,7 @@ import com.example.andy.player.aidl.MusicPlayListner;
 import com.example.andy.player.aidl.SongBean;
 import com.example.andy.player.application.MyApplication;
 import com.example.andy.player.bean.Lrc;
+import com.example.andy.player.contract.Contract;
 import com.example.andy.player.http.HttpCallback;
 import com.example.andy.player.http.HttpClient;
 import com.example.andy.player.interfaces.IplayStatus;
@@ -42,9 +46,11 @@ import com.example.andy.player.tools.CoverLoader;
 import com.example.andy.player.tools.DiskDimenUtils;
 import com.example.andy.player.tools.LogUtil;
 import com.example.andy.player.tools.SongEvent;
+import com.example.andy.player.tools.ToastUtil;
 import com.example.andy.player.tools.Transformer;
 import com.example.andy.player.weight.Dislayout;
 import com.example.andy.player.weight.DisplayLayout;
+import com.example.andy.player.weight.TakePhotoPopWin;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -239,7 +245,7 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
 
 
 
-        lrcView.loadLrc(getLrcText("chengdu.lrc"));
+        lrcView.loadLrc("");
         lrcView.updateTime(0);
     }
 
@@ -277,6 +283,13 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
                     dislayout.setVisibility(View.VISIBLE);
                     lrcView.setVisibility(View.INVISIBLE);
                 }
+            }
+        });
+
+        ivMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopFormBottom();
             }
         });
     }
@@ -334,6 +347,7 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which){
                                     case 0:
+                                        if(!Contract.TOKEN.equals("")){
                                         CommentFragment.songBean=songList.get(index);
                                         isCommentFragmentShow=true;
                                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
@@ -346,6 +360,9 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
                                             commentFragment.changeDate();
                                         }
                                         ft.commitAllowingStateLoss();
+                                        } else {
+                                            ToastUtil.Toast("请先登录");
+                                        }
                                         break;
                                 }
                             }
@@ -618,4 +635,25 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
     }
 
 
+    public void showPopFormBottom() {
+        TakePhotoPopWin takePhotoPopWin = new TakePhotoPopWin(getActivity(), songList);
+//        设置Popupwindow显示位置（从底部弹出）
+        LogUtil.doLog("showPopFormBottom",songList.size()+"");
+        takePhotoPopWin.showAtLocation(getView().findViewById(R.id.set_freground), Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL, 0, 0);
+        final WindowManager.LayoutParams[] params = {this.getActivity().getWindow().getAttributes()};
+        //当弹出Popupwindow时，背景变半透明
+        params[0].alpha=0.7f;
+        this.getActivity().getWindow().setAttributes(params[0]);
+        //设置Popupwindow关闭监听，当Popupwindow关闭，背景恢复1f
+        takePhotoPopWin.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                params[0] = getActivity().getWindow().getAttributes();
+                params[0].alpha=1f;
+                getActivity().getWindow().setAttributes(params[0]);
+            }
+        });
+
+//        takePhotoPopWin.lis
+    }
 }

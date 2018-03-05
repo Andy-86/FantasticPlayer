@@ -321,10 +321,18 @@ public class RemoteMusicFragment extends MvpFragment<RemotePresenter> {
             if(info.type==tipid){
                 info.firsSongname=list.get(0).getSongname();
                 info.firsSingername=list.get(0).getSingername();
-                info.secondSongname=list.get(1).getSongname();
-                info.secondSingername=list.get(1).getSingername();
-                info.thirdSongname=list.get(2).getSongname();
-                info.thirdSingername=list.get(2).getSingername();
+                if(list.size()>=3)
+                {
+                    info.secondSongname=list.get(1).getSongname();
+                    info.secondSingername=list.get(1).getSingername();
+                    info.thirdSongname=list.get(2).getSongname();
+                    info.thirdSingername=list.get(2).getSingername();
+                }else {
+                    info.secondSongname=".....";
+                    info.secondSingername=".....";
+                    info.thirdSongname=".....";
+                    info.thirdSingername=".....";
+                }
                 info.imageUrl=list.get(0).getAlbumpic_big();
                 listAdapter.notifyDataSetChanged();
                 break;
