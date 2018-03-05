@@ -219,18 +219,20 @@ public class LocalMusicFragment extends MvpFragment<LocalPresenter> {
 
             @Override
             protected void onPostExecute(List<SongBean> list) {
-                LogUtil.doLog("onPostExecute",""+list.get(0));
-                if(adapter==null) {
-                    adapter = new LocalMusicAdapter(getActivity(), list);
-                    mlist = list;
-                    lvLocalMusic.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    lvLocalMusic.setAdapter(adapter);
-                    adapter.setClickMoreListner(clickMoreListner);
-                }else {
-                    mlist.removeAll(mlist);
-                    for(SongBean songBean:list)
-                        mlist.add(songBean);
-                    adapter.notifyDataSetChanged();
+                if(list!=null) {
+                    LogUtil.doLog("onPostExecute", "" + list.size());
+                    if (adapter == null) {
+                        adapter = new LocalMusicAdapter(getActivity(), list);
+                        mlist = list;
+                        lvLocalMusic.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        lvLocalMusic.setAdapter(adapter);
+                        adapter.setClickMoreListner(clickMoreListner);
+                    } else {
+                        mlist.removeAll(mlist);
+                        for (SongBean songBean : list)
+                            mlist.add(songBean);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
 
             }

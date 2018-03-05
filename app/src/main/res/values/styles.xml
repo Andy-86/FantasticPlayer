@@ -78,4 +78,8 @@
         <item name="colorButtonNormal">@color/primary_darker</item>
         <item name="android:colorButtonNormal">@color/primary_darker</item>
     </style>
+    <style name="take_photo_anim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/music_list_pop_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/music_list_pop_quit_anim</item>
+    </style>
 </resources>
