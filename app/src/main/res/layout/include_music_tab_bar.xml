@@ -13,7 +13,7 @@
         android:background="@drawable/btn_action_bg_selector"
         android:contentDescription="@null"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_menu" />
+        android:src="@drawable/ic_menu_callback_24dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"

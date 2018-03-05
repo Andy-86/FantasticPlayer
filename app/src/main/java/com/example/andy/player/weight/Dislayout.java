@@ -67,6 +67,7 @@ public class Dislayout extends RelativeLayout {
     private long mSreenHeight;
 
     private Bitmap bitmapDisc;
+    private boolean isFirst=true;
     private boolean isFirstload=true;
     private Context context;
     private ArrayList<SongBean > songlist;
@@ -312,9 +313,13 @@ public class Dislayout extends RelativeLayout {
                 Log.d(TAG, "onPageSelected: " + position);
                 if (position > currentItem) {
                     notifyStartAnimotion(position);
-                    if (!doNextOrLast)
-                        if (pStatus != null)
+                    if (!doNextOrLast){
+                        if (pStatus != null&&!isFirst)
+                        {
                             pStatus.toNext();
+                        }else {
+                            isFirst=false;
+                        }}
                         else
                             doNextOrLast = false;
                     Log.d(TAG, "onPageSelected: ToNext");

@@ -334,7 +334,7 @@ public class MusicAcitivity extends BaseActivity
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnEvenMain(SongEvent songEvent) {
 
-        Log.d(TAG, "OnEvenMain: " + songEvent.getSongBean());
+        //==null为本地音乐
         if (songEvent.getSongBean().getM4a() == null) {
             if (mPlayFragment == null) {
                 showPlayingFragmentWithSongEvent(songEvent, ((LocalMusicFragment) fragmentAdapter.getItem(0)).getList());

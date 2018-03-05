@@ -61,14 +61,11 @@ public class DownloadReceiver extends BroadcastReceiver {
                 }
             }, 1000);
 
-            EventBus.getDefault().post(new UpdataEvetn());
+
         }
     }
 
     private void scanMusic() {
-//        PlayService playService = AppCache.getPlayService();
-//        if (playService != null) {
-//            playService.updateMusicList(null);
-//        }
+        EventBus.getDefault().post(new UpdataEvetn());
     }
 }

@@ -55,4 +55,5 @@
     <string name="delete_music">删除音乐</string>
     <string name="delete">删除</string>
     <string name="no_permission_setting">没有权限</string>
+    <string name="please_login">请先登录</string>
 </resources>

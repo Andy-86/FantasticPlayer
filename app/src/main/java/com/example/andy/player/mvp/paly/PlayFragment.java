@@ -32,6 +32,7 @@ import com.example.andy.player.aidl.MusicPlayListner;
 import com.example.andy.player.aidl.SongBean;
 import com.example.andy.player.application.MyApplication;
 import com.example.andy.player.bean.Lrc;
+import com.example.andy.player.contract.Contract;
 import com.example.andy.player.http.HttpCallback;
 import com.example.andy.player.http.HttpClient;
 import com.example.andy.player.interfaces.IplayStatus;
@@ -42,6 +43,7 @@ import com.example.andy.player.tools.CoverLoader;
 import com.example.andy.player.tools.DiskDimenUtils;
 import com.example.andy.player.tools.LogUtil;
 import com.example.andy.player.tools.SongEvent;
+import com.example.andy.player.tools.ToastUtil;
 import com.example.andy.player.tools.Transformer;
 import com.example.andy.player.weight.Dislayout;
 import com.example.andy.player.weight.DisplayLayout;
@@ -296,7 +298,7 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivLast:
-                if (index <songList.size()) {
+                if (index >0) {
                     index--;
                     LogUtil.doLog("onViewClicked", "IVLAST" + index);
 //                    setFreground.setForeground(DiskDimenUtils.getForegroundDrawable(bitmaps[index], getActivity()));
@@ -334,6 +336,7 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which){
                                     case 0:
+                                        if(Contract.TOKEN!=""){
                                         CommentFragment.songBean=songList.get(index);
                                         isCommentFragmentShow=true;
                                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
@@ -345,7 +348,9 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
                                             ft.show(commentFragment);
                                             commentFragment.changeDate();
                                         }
-                                        ft.commitAllowingStateLoss();
+                                        ft.commitAllowingStateLoss();}else {
+                                            ToastUtil.Toast(getString(R.string.please_login));
+                                        }
                                         break;
                                 }
                             }
@@ -435,6 +440,7 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
      * 假如进度是0就直接开始
      */
     public void starPalyMusic(final SongBean songBean) {
+
         setSongbeanToTitle(songBean);
         try {
             mMusicService.action(MusicService.MUSIC_ACTION_PLAY, songBean);
@@ -552,16 +558,17 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
     public void activityCallPlay(SongEvent event) {
         SongBean  songBean = event.getSongBean();
         starPalyMusic(songBean);
-        Log.d(TAG, "onEventMain: "+songBean.toString());
+//        Log.d(TAG, "onEventMain: "+songBean.toString());
 //        Bitmap cover = CoverLoader.getInstance().loadThumbnail(event.getSongBean());
 //        setFreground.setForeground(DiskDimenUtils.getForegroundDrawable(cover, getActivity()));
 //        setFreground.beginAnimation();
 
         //设置转盘的图片
-        dislayout.setcurrentItem(index);
-        dislayout.doPlay();
         int index=songList.indexOf(songBean);
         this.index=index;
+        dislayout.setcurrentItem(index);
+        dislayout.doPlay();
+
     }
 
     public void activityCallPlayNext(SongBean songBean) {
@@ -593,6 +600,7 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
 
 
     public void startWithNetWorkSong(SongBean songBean){
+        LogUtil.doLog("startWithNetWorkSong",""+songBean.getSongname());
         starPalyMusic(songBean);
         this.index=songList.size()-1;
         dislayout.setcurrentItem(index);
