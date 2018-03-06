@@ -114,7 +114,8 @@ public class CoverLoader {
         if (songBean == null) {
             return null;
         }
-
+        if (songBean.getAlbummid()==null)
+            return null;
         if (Integer.valueOf(songBean.getAlbummid()) > 0) {
             return songBean.getAlbummid().concat(type.value);
         }

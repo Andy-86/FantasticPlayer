@@ -18,11 +18,11 @@ import retrofit2.http.POST;
 public interface CommentServer {
     @POST("/comment/add")
     @FormUrlEncoded
-    public Observable<ResponseBody> add(@Header("token") String token,@Field("songId") int songId,@Field("content") String content);
+    public Observable<ResponseBody> add(@Header("token") String token,@Field("songid") int songId,@Field("content") String content);
 
     @POST("/comment/findbysongid")
     @FormUrlEncoded
-    public Observable<List<Comment>> findbysongid(@Header("token") String token, @Field("songId") int songId);
+    public Observable<List<Comment>> findbysongid(@Header("token") String token, @Field("songid") int songId);
 
     @POST("/comment/addlikebycommentid")
     @FormUrlEncoded
