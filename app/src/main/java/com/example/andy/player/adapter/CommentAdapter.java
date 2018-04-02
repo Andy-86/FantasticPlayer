@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.example.andy.player.bean.Post;
+import com.example.andy.player.interfaces.ClickMoreListner;
 import com.example.andy.player.weight.PostView;
 
 import java.util.List;
@@ -17,6 +18,12 @@ import java.util.List;
 public class CommentAdapter   extends BaseAdapter {
     private List<Post> posts;
     private Context context;
+
+    public void setClickMoreListner(ClickMoreListner<Post> clickMoreListner) {
+        this.clickMoreListner = clickMoreListner;
+    }
+
+    public ClickMoreListner<Post> clickMoreListner;
     public CommentAdapter(List<Post> posts, Context context) {
         this.posts = posts;
         this.context=context;
@@ -43,6 +50,7 @@ public class CommentAdapter   extends BaseAdapter {
             convertView = new PostView(context);
         }
         ((PostView)convertView).setPost(posts.get(position));
+        ((PostView) convertView).setClickMoreListner(clickMoreListner);
         return convertView;
     }
 }

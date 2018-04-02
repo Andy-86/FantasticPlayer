@@ -28,7 +28,7 @@ import java.util.Date;
 
 /**
  * 更新天气
- * Created by wcy on 2016/1/17.
+ * Created by
  * <p>
  * 天气现象表
  * <p>

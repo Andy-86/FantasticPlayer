@@ -53,7 +53,7 @@ public class FloorView extends LinearLayout {
     public void setComments(List<Comment> comments) {
         //清除子View
         removeAllViews();
-
+        setOrientation(VERTICAL);
         //获取评论数
         int count = comments.size();
 
@@ -73,7 +73,7 @@ public class FloorView extends LinearLayout {
      * @param comments 评论数据列表
      */
     private void initViewWithAll(List<Comment> comments) {
-        for (int i = 0; i < comments.size() - 1; i++) {
+        for (int i = 1; i < comments.size(); i++) {
             View commentView = getView(comments.get(i), i, comments.size() - 1, false);
             addView(commentView);
         }
@@ -129,6 +129,7 @@ public class FloorView extends LinearLayout {
         TextView tvNum = (TextView) commentView.findViewById(R.id.view_post_comment_num_tv);
         TextView tvHide = (TextView) commentView.findViewById(R.id.view_post_comment_hide_tv);
 
+
         /*
         判断是否是隐藏楼层
          */
@@ -156,6 +157,8 @@ public class FloorView extends LinearLayout {
             tvUserName.setText(user.getUser());
             tvContent.setText(comment.getContent());
             tvNum.setText(String.valueOf(index + 1));
+
+
         }
 
         //设置布局参数

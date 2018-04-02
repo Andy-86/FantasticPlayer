@@ -1,7 +1,7 @@
 package com.example.andy.player.tools;
 
 /**
- * Created by hzwangchenyan on 2017/1/20.
+ * Created by andy on 2017/1/20.
  */
 public interface IExecutor<T> {
     void execute();

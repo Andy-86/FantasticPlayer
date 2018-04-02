@@ -348,7 +348,7 @@ public class PlayFragment extends MvpFragment<PlayPresnter> implements IplayStat
                                 switch (which){
                                     case 0:
 
-                                        if(!Contract.TOKEN.equals("")){
+                                        if(Contract.TOKEN.equals("")){
 
                                         CommentFragment.songBean=songList.get(index);
                                         isCommentFragmentShow=true;

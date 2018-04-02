@@ -3,7 +3,7 @@ package com.example.andy.player.tools;
 import android.graphics.Bitmap;
 
 /**
- * Created by jay on 11/7/15.
+ * Created by andy on 11/7/15.
  */
 public class StackBlurUtil {
 

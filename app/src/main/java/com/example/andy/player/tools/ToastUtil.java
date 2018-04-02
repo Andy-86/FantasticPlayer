@@ -14,4 +14,6 @@ public class ToastUtil {
     {
         Toast.makeText(MyApplication.getContext(),msg,Toast.LENGTH_SHORT).show();
     }
+
+
 }

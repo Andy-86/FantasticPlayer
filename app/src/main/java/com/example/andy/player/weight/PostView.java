@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.andy.player.R;
 import com.example.andy.player.bean.Comment;
 import com.example.andy.player.bean.Post;
+import com.example.andy.player.interfaces.ClickMoreListner;
 
 import java.util.List;
 
@@ -25,6 +27,11 @@ public class PostView extends LinearLayout {
     private CircleImageView civNick;//用户圆形头像显示控件
     private FloorView floorView;//盖楼控件
 
+    public void setClickMoreListner(ClickMoreListner<Post> clickMoreListner) {
+        this.clickMoreListner = clickMoreListner;
+    }
+
+    private ClickMoreListner<Post> clickMoreListner;
     public PostView(Context context) {
         this(context, null);
     }
@@ -68,14 +75,29 @@ public class PostView extends LinearLayout {
      *
      * @param post 数据源
      */
-    public void setPost(Post post) {
+    public void setPost(final Post post) {
 
         //设置Post的赞数据
         setPraise(post);
 
         //获取该条帖子下的评论列表
         List<Comment> comments = post.getComments();
+        tvPraise.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                post.setUserPraises(post.getUserPraises()+1);
+                setPraise(post);
+            }
+        });
 
+        civNick.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(clickMoreListner!=null){
+                    clickMoreListner.ClickMore(post);
+                }
+            }
+        });
         /*
         判断评论长度
         1.如果只有一条评论那么则显示该评论即可并隐藏盖楼布局
@@ -89,13 +111,11 @@ public class PostView extends LinearLayout {
             //设置控件显示数据
             initUserDate(comment);
         } else {
-            //盖楼前我们要把最后一条评论数据提出来显示在Post最外层
-            int index = comments.size() - 1;
-            Comment comment = comments.get(index);
+            Comment comment = comments.get(0);
 
             //设置控件显示数据
             initUserDate(comment);
-
+            floorView.setVisibility(VISIBLE);
             floorView.setComments(comments);
         }
     }

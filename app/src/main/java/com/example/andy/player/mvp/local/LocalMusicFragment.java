@@ -129,6 +129,7 @@ public class LocalMusicFragment extends MvpFragment<LocalPresenter> {
     }
     private void requestSetRingtone(final SongBean music) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.System.canWrite(getContext())) {
+
             ToastUtils.show(R.string.no_permission_setting);
             Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
             intent.setData(Uri.parse("package:" + getContext().getPackageName()));

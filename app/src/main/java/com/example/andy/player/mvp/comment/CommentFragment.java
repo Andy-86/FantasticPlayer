@@ -15,7 +15,9 @@ import com.example.andy.player.aidl.SongBean;
 import com.example.andy.player.bean.Comment;
 import com.example.andy.player.bean.Post;
 import com.example.andy.player.bean.User;
+import com.example.andy.player.interfaces.ClickMoreListner;
 import com.example.andy.player.mvp.base.MvpFragment;
+import com.example.andy.player.tools.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,7 @@ import butterknife.Unbinder;
  */
 
 public class CommentFragment extends MvpFragment<CommentPresenter> {
+    public int status=-1;
     @BindView(R.id.comment_fm_content_lv)
     ListView commentFmContentLv;
     Unbinder unbinder;
@@ -76,6 +79,7 @@ public class CommentFragment extends MvpFragment<CommentPresenter> {
     @Override
     protected void initEvent() {
 
+
     }
 
     @Override
@@ -94,6 +98,15 @@ public class CommentFragment extends MvpFragment<CommentPresenter> {
 //            this.list.add(post);
 //        }
         adapter = new CommentAdapter(list, getActivity());
+        adapter.setClickMoreListner(new ClickMoreListner<Post>() {
+            @Override
+            public void ClickMore(Post post) {
+                LogUtil.doLog("ClickMore","");
+                commentContent.performClick();
+                status=list.indexOf(post);
+                LogUtil.doLog("ClickMore",""+status);
+            }
+        });
         commentFmContentLv.setAdapter(adapter);
     }
 
@@ -105,24 +118,37 @@ public class CommentFragment extends MvpFragment<CommentPresenter> {
 
     @OnClick(R.id.comment_fm_send)
     public void onViewClicked() {
-        String content=commentContent.getText().toString();
-        mPresenter.addCommnet((int) songBean.getSongid(),content);
-        commentContent.setText("");
+        if(status==-1) {
+            String content = commentContent.getText().toString();
+            mPresenter.addCommnet((int) songBean.getSongid(), content);
+            commentContent.setText("");
 
-        Post post = new Post();
-        List<Comment> clist = new ArrayList<>();
-        User user = new User();
-        user.setPassword("******");
-        user.setUser("你");
-        Comment comment=new Comment(content,user);
-        comment.setUesername("you");
-        comment.setCreateAt(System.currentTimeMillis()+"");
-        clist.add(comment);
-        post.setComments(clist);
-        post.setUserPraises(0);
-        post.setFlag(System.currentTimeMillis() + "");
-        this.list.add(post);
-        adapter.notifyDataSetChanged();
+            Post post = new Post();
+            List<Comment> clist = new ArrayList<>();
+            User user = new User();
+            user.setPassword("******");
+            user.setUser("你");
+            Comment comment = new Comment(content, user);
+            comment.setUesername("you");
+            comment.setCreateAt(System.currentTimeMillis() + "");
+            clist.add(comment);
+            post.setComments(clist);
+            post.setUserPraises(0);
+            post.setFlag(System.currentTimeMillis() + "");
+            this.list.add(post);
+            adapter.notifyDataSetChanged();
+        }else {
+            String content = commentContent.getText().toString();
+            commentContent.setText("");
+            User user = new User();
+            user.setPassword("******");
+            user.setUser("你");
+            Comment comment = new Comment(content, user);
+            comment.setCreateAt(System.currentTimeMillis() + "");
+            list.get(status).getComments().add(comment);
+            adapter.notifyDataSetChanged();
+            status=-1;
+        }
     }
 
     public void onGetCommentList(List<Comment> list){
