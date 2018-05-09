@@ -318,7 +318,7 @@ public class RemoteMusicFragment extends MvpFragment<RemotePresenter> {
 
     public void insertIntoListInfo(int tipid,List<SongBean> list){
         for(SongListInfo info:listInfos){
-            if(info.type==tipid){
+            if(info.type==tipid&&list.size()>0){
                 info.firsSongname=list.get(0).getSongname();
                 info.firsSingername=list.get(0).getSingername();
                 if(list.size()>=3)
